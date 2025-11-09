@@ -26,6 +26,10 @@ interface ClaimCardProps {
   comments: number;
   timestamp: string;
   image?: string;
+  submittedDate: string
+  category: string
+  state: string
+  lga: string
 }
 
 const statusConfig = {
