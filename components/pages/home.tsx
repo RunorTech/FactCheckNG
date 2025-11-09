@@ -80,14 +80,14 @@ const HomePage = () => {
               </h2>
               <p className="text-muted-foreground">Most viewed claims this week</p>
             </div>
-            <Link href="/lgas">
+            <Link href="/claims">
               <Button variant="ghost">View All →</Button>
             </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {trendingClaims.map((claim) => (
-              <ClaimCard key={claim.id} claim={claim} />
+              <ClaimCard key={claim.id} {...claim} />
             ))}
           </div>
         </div>
@@ -103,7 +103,7 @@ const HomePage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {recentVerified.map((claim) => (
-              <ClaimCard key={claim.id} claim={claim} />
+              <ClaimCard key={claim.id} {...claim} />
             ))}
           </div>
         </div>
