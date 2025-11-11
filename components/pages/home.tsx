@@ -1,3 +1,4 @@
+"use client"
 import { Search, TrendingUp, MapPin, CheckCircle2 } from 'lucide-react';
 import { ClaimCard } from '@/components/custom/ui/ClaimCard';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,7 @@ import { mockClaims, getLGAsByState } from '@/mock/claims';
 import heroBg from '@/public/hero-bg.jpg';
 import Link from 'next/link';
 import SocialLinks from '../custom/ui/Socials';
+import Masonry from 'react-masonry-css';
 
 const HomePage = () => {
   const trendingClaims = mockClaims.slice(0, 3);
@@ -56,7 +58,7 @@ const HomePage = () => {
             </div>
 
             <div className="pt-4">
-              <Link href="/submit">
+              <Link href="/submit-claims">
                 <Button variant="outline" size="lg" className="gap-2">
                   Submit a Claim
                 </Button>
@@ -85,11 +87,16 @@ const HomePage = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          <Masonry
+            breakpointCols={{ default: 2, 768: 1 }}
+            className="flex gap-6"
+            columnClassName="flex flex-col gap-6"
+          >
             {trendingClaims.map((claim) => (
               <ClaimCard key={claim.id} {...claim} />
             ))}
-          </div>
+          </Masonry>
         </div>
       </section>
 
@@ -101,11 +108,20 @@ const HomePage = () => {
             <p className="text-muted-foreground">Latest fact-checked claims</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {recentVerified.map((claim) => (
               <ClaimCard key={claim.id} {...claim} />
             ))}
-          </div>
+          </div> */}
+          <Masonry
+            breakpointCols={{ default: 2, 768: 1 }}
+            className="flex gap-6"
+            columnClassName="flex flex-col gap-6"
+          >
+            {recentVerified.map((claim) => (
+              <ClaimCard key={claim.id} {...claim} />
+            ))}
+          </Masonry>
         </div>
       </section>
 

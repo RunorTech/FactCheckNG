@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { VerdictBadge } from "./VerdictBadge";
 
 export type ClaimStatus = "verified" | "unverified" | "false";
@@ -25,30 +25,14 @@ interface ClaimCardProps {
   likes: number;
   comments: number;
   timestamp: string;
-  image?: string;
+  image?: string | StaticImageData;
   submittedDate: string
   category: string
   state: string
   lga: string
 }
 
-const statusConfig = {
-  verified: {
-    label: "VERIFIED",
-    variant: "default" as const,
-    className: "bg-verified text-verified-foreground hover:bg-verified/90",
-  },
-  unverified: {
-    label: "UNVERIFIED",
-    variant: "secondary" as const,
-    className: "bg-unverified text-unverified-foreground hover:bg-unverified/90",
-  },
-  false: {
-    label: "FALSE",
-    variant: "destructive" as const,
-    className: "bg-false text-false-foreground hover:bg-false/90",
-  },
-};
+
 
 export const ClaimCard = ({
   id,
@@ -66,19 +50,18 @@ export const ClaimCard = ({
   lga,
   state,
 }: ClaimCardProps) => {
-  const statusData = statusConfig[status];
   const cardBgColor = {
-    true: 'bg-verdict-true/10 ',
-    inconclusive: 'bg-verdict-inconclusive/10 ',
-    false: 'bg-verdict-false/10 ',
-    pending: 'bg-verdict-pending/10 ',
+    true: 'verdict-true/10 ',
+    inconclusive: 'verdict-inconclusive/10 ',
+    false: 'verdict-false/10 ',
+    pending: 'verdict-pending/10 ',
   };
 
   return (
-    <div className={`${cardBgColor[verdict]} p-2 rounded-2xl border hover:shadow-lg`}>
+    <div className={`bg-${cardBgColor[verdict]} p-2 rounded-2xl border hover:shadow-lg h-fit`}>
       
-      <Card className="overflow-hidden transition-all py-0 border-0">
-        <CardHeader className={`${cardBgColor[verdict]} pb-3`}>
+     <Card className="overflow-hidden transition-all py-0 border-0">
+        <CardHeader className={`bg-${cardBgColor[verdict]} pb-3`}>
           <div className="flex items-start justify-between">
             <div className="flex items-center space-x-3">
               <Avatar className="h-10 w-10">
@@ -132,13 +115,13 @@ export const ClaimCard = ({
               <Image
                 src={image}
                 alt="Claim visual"
-                className="w-full rounded-lg object-cover max-h-96 hover:opacity-90 transition-opacity"
+                className={`bg-${cardBgColor[verdict]} w-full border p-1 rounded-lg object-fill max-h-60 hover:opacity-90 transition-opacity`}
               />
             </Link>
           )}
 
           {source && (
-            <div className="rounded-lg border bg-muted/50 p-3">
+            <div className="rounded-lg border bg-muted/50 p-3 mt-3">
               <a
                 href={source}
                 target="_blank"

@@ -10,7 +10,7 @@ export const CreatePostCard = () => {
         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
           <User className="h-5 w-5 text-primary" />
         </div>
-        <Link href="/submit" className="flex-1">
+        <Link href="/submit-claims" className="flex-1">
           <Button
             variant="outline"
             className="w-full justify-start text-muted-foreground hover:bg-muted rounded-full"

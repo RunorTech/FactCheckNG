@@ -13,6 +13,7 @@
   /* Core */
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
+  --color-text-color: var(--text-color);;
 
   /* Surfaces */
   --color-card: hsl(var(--card));
@@ -89,6 +90,7 @@
   --primary-foreground-green: 0 0% 100%;
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
+  --text-color: oklch(100% 0.00011 271.152);
 
   --secondary: 240 4.8% 95.9%;
   --secondary-foreground: 240 5.9% 10%;
@@ -142,6 +144,7 @@
 
   --card: 240 10% 3.9%;
   --card-foreground: 0 0% 98%;
+  --text-color: oklch(0% 0 0);
 
   --popover: 240 10% 3.9%;
   --popover-foreground: 0 0% 98%;

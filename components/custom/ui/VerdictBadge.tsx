@@ -20,7 +20,7 @@ export const VerdictBadge = ({ verdict, size = 'md' }: VerdictBadgeProps) => {
       className: 'bg-verdict-false/10 text-verdict-false border-verdict-false',
     },
     pending: {
-      label: 'PENDING',
+      label: 'UNVERIFIED',
       icon: Clock,
       className: 'bg-verdict-pending/10 text-verdict-pending border-verdict-pending',
     },

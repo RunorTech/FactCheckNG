@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/static-components */
 "use client";
 import { Search, Menu, CheckCircle2 } from 'lucide-react';
 import { Button } from '../../ui/button';
@@ -16,6 +17,7 @@ export const Header = () => {
   const navLinks = [
     { path: '/', label: 'Home' },
     { path: '/lgas', label: 'Browse LGAs' },
+    { path: '/claims', label: 'Browse Claims' },
     { path: '/submit-claims', label: 'Submit Claim' },
     { path: '/about', label: 'About' },
   ];

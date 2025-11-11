@@ -1,6 +1,6 @@
 import SubmitClaimsPage from "@/components/pages/SubmitClaims";
 
-export default function Home() {
+export default function SubmitClaims() {
   return (
     <SubmitClaimsPage/>
   );

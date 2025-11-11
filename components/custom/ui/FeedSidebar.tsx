@@ -1,17 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Home, MapPin, TrendingUp, Users, Settings, BookOpen } from 'lucide-react';
+import { mainLinks } from '@/mock/constant';
 import Link from 'next/link';
 
 export const FeedSidebar = () => {
-  const mainLinks = [
-    { icon: Home, label: 'Feed', path: '/' },
-    { icon: MapPin, label: 'Browse LGAs', path: '/lgas' },
-    { icon: TrendingUp, label: 'Trending', path: '/trending' },
-    { icon: Users, label: 'Community', path: '/user' },
-    { icon: BookOpen, label: 'About', path: '/about' },
-  ];
+ 
 
   return (
     <div className="hidden lg:block w-64 sticky top-[4.5rem] h-[calc(100vh-4.5rem)] overflow-y-auto">

@@ -1,3 +1,6 @@
+import speaking from '@/assets/speaking.jpg';
+import { StaticImageData } from 'next/image';
+
 export type VerdictStatus = "true" | "false" | "pending" | "inconclusive";
 
 export type Category =
@@ -31,6 +34,7 @@ export interface Claim {
   investigator?: string;
   views: number;
   relatedClaims?: string[];
+  image?: StaticImageData | string;
   author: {
     name: string;
     avatar: string;
@@ -126,6 +130,7 @@ export const mockClaims: Claim[] = [
     source: "https://who.int/fact-check/5g-covid",
     comments: 123,
     timestamp: "4 hours ago",
+    image: speaking,
   },
   {
     id: "3",
