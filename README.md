@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+// -----------------------------
+// FILE: README.md
+// -----------------------------
+# FactCheckNG - Next.js + Prisma backend
 
-## Getting Started
 
-First, run the development server:
+This repository contains a working template for a backend using Next.js (app router), Prisma and PostgreSQL.
+
+
+## Quick start
+
+
+1. Install dependencies
+
+
+```bash
+npm install
+```
+
+
+2. Create a `.env` file at project root:
+
+
+```
+DATABASE_URL="postgresql://user:password@localhost:5432/dbname?schema=public"
+```
+
+
+3. Generate Prisma client & migrate
+
+
+```bash
+npx prisma generate
+npx prisma migrate dev --name init
+```
+
+
+4. Run seed (optional)
+
+
+```bash
+npm run prisma:seed
+```
+
+
+5. Start dev server
+
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API examples
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+- `GET /api/states` -> list states
+- `POST /api/states` body `{ name: string }` -> create state
+- `GET /api/lgas` -> list LGAs
+- `POST /api/lgas` body `{ name, stateId }`
+- `GET /api/claims` -> list claims (query params `lgaId`, `category`)
+- `POST /api/claims` -> create claim
+- `GET /api/claims/:id` -> get claim with related items
+- `PATCH /api/claims/:id` -> update claim
+- `DELETE /api/claims/:id` -> delete claim
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Notes
+- The Prisma schema in `prisma/schema.prisma` is the one you supplied. Run `prisma generate` after placing it.
+- This repo focuses on the backend; you can hook a Next.js frontend or any other client.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+// -----------------------------
+// End of code document
+// -----------------------------

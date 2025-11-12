@@ -14,7 +14,6 @@ const HomePage = () => {
   const recentVerified = mockClaims.filter(c => c.verdict !== 'pending').slice(0, 3);
   const lgasByState = getLGAsByState();
   const topStates = Object.entries(lgasByState).slice(0, 6);
-
   return (
     <div className="flex min-h-screen flex-col">
 

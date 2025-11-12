@@ -20,11 +20,23 @@ const SubmitClaimsPage = () => {
   const [anonymous, setAnonymous] = useState(false);
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: connect to backend API for submission
-    toast.success('Claim submitted successfully! Our team will review it shortly.');
-  };
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+
+    const formData = new FormData(e.currentTarget)
+    const values = Object.fromEntries(formData.entries())
+
+    const res = await fetch('/api/claims', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(values),
+    })
+    console.log(res)
+
+  }
+
+
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -43,6 +55,7 @@ const SubmitClaimsPage = () => {
               <Label htmlFor="title">Claim Title *</Label>
               <Input
                 id="title"
+                name='title'
                 placeholder="Enter a brief summary of the claim"
                 required
               />
@@ -52,6 +65,7 @@ const SubmitClaimsPage = () => {
               <Label htmlFor="description">Description *</Label>
               <Textarea
                 id="description"
+                name='description'
                 placeholder="Provide more details about where you heard this claim and why it needs verification"
                 rows={5}
                 required
@@ -61,7 +75,7 @@ const SubmitClaimsPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label>State *</Label>
-                <Select onValueChange={(value) => setSelectedState(value)} required>
+                <Select name='state' onValueChange={(value) => setSelectedState(value)} required>
                   <SelectTrigger className='w-full'>
                     <SelectValue placeholder="Select state" />
                   </SelectTrigger>
@@ -77,7 +91,7 @@ const SubmitClaimsPage = () => {
 
               <div className="space-y-2">
                 <Label>Local Government Area *</Label>
-                <Select disabled={!selectedState} required>
+                <Select name='lga' disabled={!selectedState} required>
                   <SelectTrigger className='w-full'>
                     <SelectValue placeholder={selectedState ? "Select LGA" : "Select a state first"} />
                   </SelectTrigger>
@@ -95,16 +109,16 @@ const SubmitClaimsPage = () => {
 
             <div className="space-y-2">
               <Label htmlFor="category">Category *</Label>
-              <Select required>
+              <Select name='category' required>
                 <SelectTrigger className='w-full'>
-                  <SelectValue placeholder="Select category" />
+                  <SelectValue  placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="health">Health</SelectItem>
-                  <SelectItem value="politics">Politics</SelectItem>
-                  <SelectItem value="economy">Economy</SelectItem>
-                  <SelectItem value="security">Security</SelectItem>
-                  <SelectItem value="others">Others</SelectItem>
+                  <SelectItem value="Health">Health</SelectItem>
+                  <SelectItem value="Politics">Politics</SelectItem>
+                  <SelectItem value="Economy">Economy</SelectItem>
+                  <SelectItem value="Security">Security</SelectItem>
+                  <SelectItem value="Others">Others</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -112,7 +126,7 @@ const SubmitClaimsPage = () => {
             <div className="space-y-2">
               <Label htmlFor="attachments">Upload Attachments (Optional)</Label>
               <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer">
-                <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                <Upload name='file' className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
                 <p className="text-sm text-muted-foreground">
                   Click to upload images, videos, or documents
                 </p>
@@ -131,6 +145,7 @@ const SubmitClaimsPage = () => {
               </div>
               <Switch
                 id="anonymous"
+                name='anonymous'
                 checked={anonymous}
                 onCheckedChange={setAnonymous}
               />

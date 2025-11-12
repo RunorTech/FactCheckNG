@@ -1,0 +1,260 @@
+// This is your Prisma schema file
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+        
+
+// Enums
+enum AppRole {
+  admin
+  researcher
+  moderator
+  viewer
+}
+
+enum VerdictStatus {
+  true
+  false
+  pending
+  inconclusive
+}
+
+enum ClaimCategory {
+  Health
+  Politics
+  Economy
+  Security
+  Others
+}
+
+enum EvidenceType {
+  image
+  video
+  link
+  document
+}
+
+enum NotificationType {
+  comment
+  like
+  verdict
+  appeal
+  mention
+}
+
+enum ReportReason {
+  spam
+  misleading
+  inappropriate
+  other
+}
+
+// Models
+model State {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String   @unique
+  createdAt  DateTime @default(now()) @map("created_at")
+  
+  lgas       LGA[]
+
+  @@map("states")
+}
+
+model LGA {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String
+  stateId    String   @map("state_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at")
+  
+  state      State    @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  // claims     Claim[]
+
+  @@unique([name, stateId])
+  @@map("lgas")
+}
+
+model Profile {
+  id              String   @id @db.Uuid
+  fullName        String?  @map("full_name")
+  avatarUrl       String?  @map("avatar_url")
+  bio             String?
+  location        String?
+  verifiedClaims  Int      @default(0) @map("verified_claims")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("profiles")
+}
+
+model UserRole {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  role      AppRole  @default(viewer)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, role])
+  @@map("user_roles")
+}
+
+model Claim {
+  id                String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // userId            String         @map("user_id") @db.Uuid
+  title             String
+  description       String
+  // lgaId             String         @map("lga_id") @db.Uuid
+  category          ClaimCategory
+  verdict           VerdictStatus  @default(pending)
+  verdictSummary    String?        @map("verdict_summary")
+  submittedDate     DateTime       @default(now()) @map("submitted_date")
+  verdictDate       DateTime?      @map("verdict_date")
+  investigatorNotes String?        @map("investigator_notes")
+  investigatorId    String?        @map("investigator_id") @db.Uuid
+  views             Int            @default(0)
+  isAnonymous       Boolean        @default(false) @map("is_anonymous")
+  createdAt         DateTime       @default(now()) @map("created_at")
+  updatedAt         DateTime       @default(now()) @updatedAt @map("updated_at")
+  
+  // lga               LGA            @relation(fields: [lgaId], references: [id])
+  evidence          Evidence[]
+  citations         Citation[]
+  comments          Comment[]
+  likes             Like[]
+  shares            Share[]
+  appeals           Appeal[]
+  reports           Report[]
+  relatedFrom       RelatedClaim[] @relation("ClaimToRelated")
+  relatedTo         RelatedClaim[] @relation("RelatedToClaim")
+
+  @@map("claims")
+}
+
+model Evidence {
+  id        String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  claimId   String        @map("claim_id") @db.Uuid
+  type      EvidenceType
+  url       String
+  caption   String?
+  createdAt DateTime      @default(now()) @map("created_at")
+  
+  claim     Claim         @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@map("evidence")
+}
+
+model Citation {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  claimId   String   @map("claim_id") @db.Uuid
+  title     String
+  url       String
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  claim     Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@map("citations")
+}
+
+model Comment {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  claimId   String    @map("claim_id") @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  content   String
+  parentId  String?   @map("parent_id") @db.Uuid
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  
+  claim     Claim     @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+
+  @@map("comments")
+}
+
+model Like {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  claimId   String   @map("claim_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  claim     Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@unique([claimId, userId])
+  @@map("likes")
+}
+
+model Share {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  claimId   String   @map("claim_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  platform  String?
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  claim     Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@map("shares")
+}
+
+model Notification {
+  id        String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String           @map("user_id") @db.Uuid
+  type      NotificationType
+  title     String
+  message   String
+  link      String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  @@map("notifications")
+}
+
+model Appeal {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  claimId       String   @map("claim_id") @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  reason        String
+  status        String   @default("pending")
+  adminResponse String?  @map("admin_response")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
+  
+  claim         Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@map("appeals")
+}
+
+model Report {
+  id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  claimId       String       @map("claim_id") @db.Uuid
+  userId        String       @map("user_id") @db.Uuid
+  reason        ReportReason
+  details       String?
+  status        String       @default("pending")
+  adminResponse String?      @map("admin_response")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @default(now()) @updatedAt @map("updated_at")
+  
+  claim         Claim        @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@map("reports")
+}
+
+model RelatedClaim {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  claimId        String   @map("claim_id") @db.Uuid
+  relatedClaimId String   @map("related_claim_id") @db.Uuid
+  createdAt      DateTime @default(now()) @map("created_at")
+  
+  claim          Claim    @relation("ClaimToRelated", fields: [claimId], references: [id], onDelete: Cascade)
+  relatedClaim   Claim    @relation("RelatedToClaim", fields: [relatedClaimId], references: [id], onDelete: Cascade)
+
+  @@unique([claimId, relatedClaimId])
+  @@map("related_claims")
+}
