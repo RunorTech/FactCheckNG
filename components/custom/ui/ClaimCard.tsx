@@ -1,54 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Heart, MessageCircle, Share2, Bookmark, User, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import { VerdictBadge } from "./VerdictBadge";
-
-export type ClaimStatus = "verified" | "unverified" | "false";
-export type VerdictStatus = "true" | "false" | "pending" | "inconclusive";
-
-interface ClaimCardProps {
-  id: string;
-  author: {
-    name: string;
-    avatar: string;
-    profession?: string;
-  };
-  claim: string;
-  source?: string;
-  status: ClaimStatus;
-  verdict: VerdictStatus;
-  likes: number;
-  comments: number;
-  timestamp: string;
-  image?: string | StaticImageData;
-  submittedDate: string
-  category: string
-  state: string
-  lga: string
-}
-
+import { base64ToFile, timeAgoOrIn } from "@/mock/constant";
 
 
 export const ClaimCard = ({
   id,
-  author,
-  claim,
-  source,
-  status,
+  profile,
+  description,
   likes,
   comments,
-  timestamp,
-  image,
   verdict,
   submittedDate,
   category,
   lga,
-  state,
+  createdAt,
+  attachments,
 }: ClaimCardProps) => {
   const cardBgColor = {
     true: 'verdict-true/10 ',
@@ -56,7 +29,8 @@ export const ClaimCard = ({
     false: 'verdict-false/10 ',
     pending: 'verdict-pending/10 ',
   };
-
+  const file = base64ToFile(attachments, "image.png");
+  const imageUrl = URL.createObjectURL(file);
   return (
     <div className={`bg-${cardBgColor[verdict]} p-2 rounded-2xl border hover:shadow-lg h-fit`}>
       
@@ -65,18 +39,18 @@ export const ClaimCard = ({
           <div className="flex items-start justify-between">
             <div className="flex items-center space-x-3">
               <Avatar className="h-10 w-10">
-                <AvatarImage src={author?.avatar} alt={author?.name} />
-                <AvatarFallback>{author?.name[0]}</AvatarFallback>
+                <AvatarImage src={profile?.avatarUrl} alt={profile?.fullName} />
+                <AvatarFallback>{profile?.fullName[0]}</AvatarFallback>
               </Avatar>
               <div>
                 <Link
-                  href={`/profile/${author?.name}`}
+                  href={`/profile/${profile?.fullName}`}
                   className="font-semibold text-foreground hover:underline"
                 >
-                  {author?.name}
+                  {profile?.fullName}
                 </Link>
-                {author?.profession && (
-                  <p className="text-sm text-muted-foreground">{author?.profession}</p>
+                {profile?.bio && (
+                  <p className="text-sm text-muted-foreground">{profile?.bio}</p>
                 )}
               </div>
             </div>
@@ -94,7 +68,7 @@ export const ClaimCard = ({
                 <span>{new Date(submittedDate).toLocaleDateString()}</span>
                 <span>•</span>
                 <MapPin className="h-3 w-3" />
-                <span>{lga}, {state}</span>
+                <span>{lga?.name}, {lga?.state?.name}</span>
               </div>
             </div>
             <Badge variant="secondary" className="text-xs">
@@ -106,35 +80,42 @@ export const ClaimCard = ({
         <CardContent className="space-y-3">
           <Link href={`/claim/${id}`} className="block">
             <p className="text-base leading-relaxed text-foreground hover:text-primary transition-colors">
-              {claim}
+              {description}
             </p>
           </Link>
 
-          {image && (
-            <Link href={`/claim/${id}`}>
+          {imageUrl && (
+            <Link
+              href={`/claim/${id}`}
+              className={`relative block w-full max-w-3xl aspect-[4/2] rounded-lg overflow-hidden border p-1 bg-${cardBgColor[verdict]} hover:opacity-90 transition-opacity`}
+            >
               <Image
-                src={image}
+                src={imageUrl}
                 alt="Claim visual"
-                className={`bg-${cardBgColor[verdict]} w-full border p-1 rounded-lg object-fill max-h-60 hover:opacity-90 transition-opacity`}
+                fill
+                sizes="100vw"
+                priority
+                className="object-fill"
               />
             </Link>
           )}
 
-          {source && (
+
+          
             <div className="rounded-lg border bg-muted/50 p-3 mt-3">
               <a
-                href={source}
+              href={`/claim/${id}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-muted-foreground hover:text-primary flex items-center space-x-2"
               >
-                <span className="font-medium">Source:</span>
-                <span className="truncate hover:underline">{source}</span>
+                <span className="font-medium">Read More:</span>
+              <span className="truncate hover:underline">{`/claim/${id}`}</span>
               </a>
             </div>
-          )}
+         
 
-          <p className="text-sm text-muted-foreground">{timestamp}</p>
+          <p className="text-sm text-muted-foreground">{timeAgoOrIn(createdAt)}</p>
         </CardContent>
 
         <CardFooter className="border-t pt-3">

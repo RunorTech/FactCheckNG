@@ -38,11 +38,9 @@ export interface Claim {
   author: {
     name: string;
     avatar: string;
-    profession: string;
+    bio: string;
   };
-  claim: string;
   source: string;
-   status: "unverified" | "false" | "verified";
    likes: number;
     comments: number;
     timestamp: string;
@@ -77,12 +75,9 @@ export const mockClaims: Claim[] = [
     author: {
       name: "Dr. Amina Yusuf",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Amina",
-      profession: "Medical Doctor",
+      bio: "Medical Doctor",
     },
-    claim:
-      "New study shows that drinking 8 glasses of water daily reduces risk of kidney disease by 35%. Important health information everyone should know.",
     source: "https://medicalnews.example.com/hydration-study",
-    status: "verified" as const,
     likes: 234,
     comments: 45,
     timestamp: "2 hours ago",
@@ -121,11 +116,8 @@ export const mockClaims: Claim[] = [
     author: {
       name: "Chidi Okonkwo",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Chidi",
-      profession: "Political Analyst",
+      bio: "Political Analyst",
     },
-    claim:
-      "Breaking: Government announces free education for all primary school students starting next month. This will affect over 10 million children nationwide.",
-    status: "unverified" as const,
     likes: 567,
     source: "https://who.int/fact-check/5g-covid",
     comments: 123,
@@ -151,12 +143,9 @@ export const mockClaims: Claim[] = [
     author: {
       name: "Fatima Hassan",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fatima",
-      profession: "Journalist",
+      bio: "Journalist",
     },
-    claim:
-      "Viral post claims that 5G towers cause COVID-19 symptoms. This has been scientifically proven false by WHO and multiple research institutions.",
     source: "https://who.int/fact-check/5g-covid",
-    status: "false" as const,
     likes: 89,
     comments: 67,
     timestamp: "6 hours ago",
@@ -189,12 +178,9 @@ export const mockClaims: Claim[] = [
     author: {
       name: "Emeka Nwosu",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emeka",
-      profession: "Tech Entrepreneur",
+      bio: "Tech Entrepreneur",
     },
-    claim:
-      "Nigeria's tech startup funding reached $1.2 billion in 2024, making it the leading tech hub in Africa. Lagos and Abuja seeing massive growth.",
     source: "https://technews.example.com/nigeria-tech-growth",
-    status: "verified" as const,
     likes: 432,
     comments: 78,
     timestamp: "8 hours ago",
@@ -216,11 +202,8 @@ export const mockClaims: Claim[] = [
     author: {
       name: "Zainab Abdullahi",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Zainab",
-      profession: "Economist",
+      bio: "Economist",
     },
-    claim:
-      "Central Bank announces new policy that will reduce inflation to 5% by next quarter. Details of the monetary policy framework revealed.",
-    status: "unverified" as const,
     source: "https://who.int/fact-check/5g-covid",
     likes: 156,
     comments: 34,
@@ -255,11 +238,8 @@ export const mockClaims: Claim[] = [
     author: {
       name: "Zainab Abdullahi",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Zainab",
-      profession: "Economist",
+      bio: "Economist",
     },
-    claim:
-      "Central Bank announces new policy that will reduce inflation to 5% by next quarter. Details of the monetary policy framework revealed.",
-    status: "unverified" as const,
     likes: 156,
     comments: 34,
     timestamp: "12 hours ago",

@@ -76,7 +76,7 @@ model LGA {
   createdAt  DateTime @default(now()) @map("created_at")
   
   state      State    @relation(fields: [stateId], references: [id], onDelete: Cascade)
-  // claims     Claim[]
+  claims     Claim[]
 
   @@unique([name, stateId])
   @@map("lgas")
@@ -84,10 +84,11 @@ model LGA {
 
 model Profile {
   id              String   @id @db.Uuid
-  fullName        String?  @map("full_name")
+  fullName        String  @unique @map("full_name")
   avatarUrl       String?  @map("avatar_url")
   bio             String?
   location        String?
+  claims          Claim[]
   verifiedClaims  Int      @default(0) @map("verified_claims")
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
@@ -107,10 +108,11 @@ model UserRole {
 
 model Claim {
   id                String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  // userId            String         @map("user_id") @db.Uuid
+  userId            String         @map("user_id") @db.Uuid
   title             String
   description       String
-  // lgaId             String         @map("lga_id") @db.Uuid
+  attachments       String?
+  lgaId             String         @map("lga_id") @db.Uuid
   category          ClaimCategory
   verdict           VerdictStatus  @default(pending)
   verdictSummary    String?        @map("verdict_summary")
@@ -123,7 +125,8 @@ model Claim {
   createdAt         DateTime       @default(now()) @map("created_at")
   updatedAt         DateTime       @default(now()) @updatedAt @map("updated_at")
   
-  // lga               LGA            @relation(fields: [lgaId], references: [id])
+  lga               LGA            @relation(fields: [lgaId], references: [id])
+  profile     Profile   @relation(fields: [userId], references: [id])
   evidence          Evidence[]
   citations         Citation[]
   comments          Comment[]

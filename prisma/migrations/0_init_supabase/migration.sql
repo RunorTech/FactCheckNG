@@ -62,8 +62,10 @@ CREATE TABLE "user_roles" (
 -- CreateTable
 CREATE TABLE "claims" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "user_id" UUID NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
+    "lga_id" UUID NOT NULL,
     "category" "ClaimCategory" NOT NULL,
     "verdict" "VerdictStatus" NOT NULL DEFAULT 'pending',
     "verdict_summary" TEXT,
@@ -196,6 +198,9 @@ CREATE UNIQUE INDEX "states_name_key" ON "states"("name");
 CREATE UNIQUE INDEX "lgas_name_state_id_key" ON "lgas"("name", "state_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "profiles_full_name_key" ON "profiles"("full_name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "user_roles_user_id_role_key" ON "user_roles"("user_id", "role");
 
 -- CreateIndex
@@ -206,6 +211,9 @@ CREATE UNIQUE INDEX "related_claims_claim_id_related_claim_id_key" ON "related_c
 
 -- AddForeignKey
 ALTER TABLE "lgas" ADD CONSTRAINT "lgas_state_id_fkey" FOREIGN KEY ("state_id") REFERENCES "states"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "claims" ADD CONSTRAINT "claims_lga_id_fkey" FOREIGN KEY ("lga_id") REFERENCES "lgas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "evidence" ADD CONSTRAINT "evidence_claim_id_fkey" FOREIGN KEY ("claim_id") REFERENCES "claims"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -21,10 +21,10 @@ if (category) where.category = category
 
 const claims = await prisma.claim.findMany({
 where,
-include: { lga: { include: { state: true } }, evidence: true, citations: true, comments: true }
+include: { lga: { include: { state: true } }, evidence: true, citations: true, comments: true, profile: true, likes: true }
 })
 
-return jsonResponse(claims)
+return jsonResponse({claims: claims})
 } catch (err: any) {
 return errorResponse(err.message)
 }
@@ -33,22 +33,66 @@ return errorResponse(err.message)
 
 export async function POST(req: Request) {
 try {
-const body = await req.json()
-// const required = ['userId', 'title', 'description', 'lgaId', 'category']
-// for (const r of required) if (!body[r]) return errorResponse(`${r} is required`, 400)
+ const body = await req.json()
+    // console.log("Incoming body:", body)
+    let profile;
+    const existingProfile = await prisma.profile.findUnique({
+      where: { fullName: `${body.firstName} ${body.lastName}` },
+    })
+    if(!existingProfile) {
+    const newProfile = await prisma.profile.create({
+         data: {
+        id: crypto.randomUUID(),
+        fullName: `${body.firstName} ${body.lastName}`,
+        location: body.state,
+        bio: body.career,
+      },
+    })
+    profile = newProfile
+    } else {
+    profile = existingProfile
+    }
+    
+
+    // 2️⃣ Create or find state
+    const state = await prisma.state.upsert({
+      where: { name: body.state.toLowerCase() },
+      update: {},
+      create: { name: body.state.toLowerCase() },
+    })
 
 
-const claim = await prisma.claim.create({
-data: {
-title: body.title,
-description: body.description,
-category: body.category,
 
-}
-})
-    console.log(claim)
+    // 3️⃣ Create or find LGA
+    const lga = await prisma.lGA.upsert({
+      where: {
+        name_stateId: {
+          name: body.lga.toLowerCase(),
+          stateId: state.id,
+        },
+      },
+      update: {},
+      create: {
+        name: body.lga.toLowerCase(),
+        stateId: state.id,
+      },
+    })
 
-return jsonResponse(claim, 201)
+    // 4️⃣ Create claim
+    const claim = await prisma.claim.create({
+      data: {
+        title: body.title,
+        description: body.description,
+        category: body.category,
+        isAnonymous: body.anonymous,
+        attachments: body.attachments || "",
+        userId: profile.id,
+        lgaId: lga.id,
+      },
+    })
+
+    return jsonResponse({ message: "Claim created successfully", claim }, 201)
+
 } catch (err: any) {
     console.log(err)
 

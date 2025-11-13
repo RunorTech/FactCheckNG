@@ -5,22 +5,11 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ClaimCard } from '../custom/ui/ClaimCard';
 import { CreatePostCard } from '../custom/ui/CreatePostCard';
 import { useEffect, useState } from 'react';
+import { useGetAllClaims } from '@/hooks/useGetAllClaims';
 
 const AllClaims = () => {
   const feedClaims = mockClaims;
-  const [claims, setClaims] = useState<any[]>([])
-
-  useEffect(() => {
-    const getClaims =  async () => {
-      const response = await fetch('/api/claims')
-        .then((res) => res.json())
-        .then((data) => setClaims(data))
-      console.log(response)
-
-    }
-    getClaims()
-
-  }, [])
+  const { allClaims, isLoadingClaims} = useGetAllClaims(true);
 
 
   return (
@@ -41,12 +30,14 @@ const AllClaims = () => {
       {/* Create Post */}
       <CreatePostCard />
 
-      {/* Feed */}
-      <div className="space-y-4">
-        {feedClaims.map((claim) => (
-          <ClaimCard key={claim.id} {...claim} />
-        ))}
-      </div>
+      {!isLoadingClaims && (
+        <div className="space-y-4">
+          {allClaims?.claims?.map((claim) => (
+            <ClaimCard key={claim.id} {...claim} />
+          ))}
+        </div>
+      )}
+      
     </div>
 
 
