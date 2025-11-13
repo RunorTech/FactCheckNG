@@ -28,7 +28,7 @@ const ClaimsPage = () => {
 
   const filteredClaims = mockClaims.filter(claim => {
     const matchesSearch = claim.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         claim.lga.toLowerCase().includes(searchQuery.toLowerCase());
+                         claim?.lga?.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'all' || claim.verdict === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -87,7 +87,7 @@ const ClaimsPage = () => {
                     <TableCell className="font-medium max-w-xs truncate">
                       {claim.title}
                     </TableCell>
-                    <TableCell>{claim.lga}</TableCell>
+                    <TableCell>{claim.lga.name}</TableCell>
                     <TableCell>{claim.category}</TableCell>
                     <TableCell>
                       <VerdictBadge verdict={claim.verdict} size="sm" />

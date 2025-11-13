@@ -1,0 +1,96 @@
+[
+    {
+        "id": "d6d81240-5b66-4c38-b72e-2b1f0c65ed0b",
+        "userId": "763f24df-d1a9-4b4c-86fa-fea7c8148553",
+        "title": "Lagos State Government to Distribute Free Food Items",
+        "description": "A message circulating on WhatsApp claims that Lagos State Government will distribute free food items to residents of Alimosho LGA this weekend.",
+        "attachments": "",
+        "lgaId": "16e869c9-37f4-4000-9487-d154296f1ffd",
+        "category": "Economy",
+        "verdict": "pending",
+        "verdictSummary": null,
+        "submittedDate": "2025-11-12T18:48:52.229Z",
+        "verdictDate": null,
+        "investigatorNotes": null,
+        "investigatorId": null,
+        "views": 0,
+        "isAnonymous": false,
+        "createdAt": "2025-11-12T18:48:52.229Z",
+        "updatedAt": "2025-11-12T18:48:52.229Z",
+        "lga": {
+            "id": "16e869c9-37f4-4000-9487-d154296f1ffd",
+            "name": "alimosho",
+            "stateId": "87f8b19b-ce38-4b02-b7ce-a77aaecf74f2",
+            "createdAt": "2025-11-12T18:48:50.177Z",
+            "state": {
+                "id": "87f8b19b-ce38-4b02-b7ce-a77aaecf74f2",
+                "name": "lagos",
+                "createdAt": "2025-11-12T18:47:58.670Z"
+            }
+        },
+        "evidence": [],
+        "citations": [],
+        "comments": [],
+        "profile": {
+            "id": "763f24df-d1a9-4b4c-86fa-fea7c8148553",
+            "fullName": "Oghenerunor Ighorodje",
+            "avatarUrl": null,
+            "bio": "Software Engineer",
+            "location": "lagos",
+            "verifiedClaims": 0,
+            "createdAt": "2025-11-12T18:46:23.028Z",
+            "updatedAt": "2025-11-12T18:46:23.028Z"
+        },
+        "likes": []
+    },
+    {
+        "id": "fed98c3a-f049-4f3c-b9a4-d2791d3fcf93",
+        "userId": "79a91988-91c4-4f61-a8d7-07cebb2010f6",
+        "title": "New Malaria Vaccine Available at all PHCs in Abuja",
+        "description": "Claims that a new malaria vaccine is now being administered free at all Primary Health Centers in Abuja Municipal.",
+        "attachments": "",
+        "lgaId": "12dce58a-2b07-402d-9b21-b981752c633c",
+        "category": "Politics",
+        "verdict": "pending",
+        "verdictSummary": null,
+        "submittedDate": "2025-11-12T18:53:39.792Z",
+        "verdictDate": null,
+        "investigatorNotes": null,
+        "investigatorId": null,
+        "views": 0,
+        "isAnonymous": false,
+        "createdAt": "2025-11-12T18:53:39.792Z",
+        "updatedAt": "2025-11-12T18:53:39.792Z",
+        "lga": {
+            "id": "12dce58a-2b07-402d-9b21-b981752c633c",
+            "name": "gwagwalada",
+            "stateId": "0f25a5d4-972c-4c25-b01e-64cd303dd6f9",
+            "createdAt": "2025-11-12T18:53:37.217Z",
+            "state": {
+                "id": "0f25a5d4-972c-4c25-b01e-64cd303dd6f9",
+                "name": "fct",
+                "createdAt": "2025-11-12T18:53:35.463Z"
+            }
+        },
+        "evidence": [],
+        "citations": [],
+        "comments": [],
+        "profile": {
+            "id": "79a91988-91c4-4f61-a8d7-07cebb2010f6",
+            "fullName": "Hilda Francis",
+            "avatarUrl": null,
+            "bio": "TV Presenter",
+            "location": "fct",
+            "verifiedClaims": 0,
+            "createdAt": "2025-11-12T18:53:34.439Z",
+            "updatedAt": "2025-11-12T18:53:34.439Z"
+        },
+        "likes": []
+    },
+    {
+        "id": "52f1bcee-3a0f-4131-9455-c9da441272b0",
+        "userId": "4a4676d9-0217-4af5-92cf-96cfa1f6669f",
+        "title": "Armed Robbery at Garki Market Last Night",
+        "description": "Reports circulating that there was an armed robbery incident at Garki Market involving multiple casualties.",
+        "attachments": ""
+    }]

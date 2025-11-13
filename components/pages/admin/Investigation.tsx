@@ -86,7 +86,7 @@ const Investigation = () => {
               <div className="flex flex-wrap gap-3 text-sm text-muted-foreground mt-2">
                 <div className="flex items-center gap-1">
                   <MapPin className="h-4 w-4" />
-                  <span>{claim.lga}, {claim.state}</span>
+                  <span>{claim.lga.name}, {claim.lga.state.name}</span>
                 </div>
                 <Badge variant="secondary">{claim.category}</Badge>
                 <div className="flex items-center gap-1">

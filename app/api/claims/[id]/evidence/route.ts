@@ -5,25 +5,38 @@
 // -----------------------------
 import { prisma } from '@/lib/prisma'
 import { jsonResponse, errorResponse } from '@/app/api/_helpers/response'
+import { NextRequest } from 'next/server'
 
-
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
-try {
-const evidence = await prisma.evidence.findMany({ where: { claimId: params.id } })
-return jsonResponse(evidence)
-} catch (err: any) {
-return errorResponse(err.message)
+export async function GET(_req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await context.params
+    const evidence = await prisma.evidence.findMany({ where: { claimId: id } })
+    return jsonResponse(evidence)
+  } catch (err: any) {
+    return errorResponse(err.message)
+  }
 }
-}
 
+export async function POST(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await context.params
+    const body = await req.json()
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
-try {
-const body = await req.json()
-if (!body.type || !body.url) return errorResponse('type and url are required', 400)
-const ev = await prisma.evidence.create({ data: { claimId: params.id, type: body.type, url: body.url, caption: body.caption } })
-return jsonResponse(ev, 201)
-} catch (err: any) {
-return errorResponse(err.message)
-}
+    if (!body.type || !body.url) {
+      return errorResponse('type and url are required', 400)
+    }
+
+    const ev = await prisma.evidence.create({
+      data: {
+        claimId: id,
+        type: body.type,
+        url: body.url,
+        caption: body.caption,
+      },
+    })
+
+    return jsonResponse(ev, 201)
+  } catch (err: any) {
+    return errorResponse(err.message)
+  }
 }

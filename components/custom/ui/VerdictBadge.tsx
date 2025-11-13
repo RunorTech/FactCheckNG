@@ -7,7 +7,7 @@ interface VerdictBadgeProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-export const VerdictBadge = ({ verdict, size = 'md' }: VerdictBadgeProps) => {
+export const VerdictBadge = ({ verdict = "pending", size = 'md' }: VerdictBadgeProps) => {
   const config = {
     true: {
       label: 'VERIFIED',

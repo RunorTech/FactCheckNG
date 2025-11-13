@@ -8,6 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { VerdictBadge } from "./VerdictBadge";
 import { base64ToFile, timeAgoOrIn } from "@/mock/constant";
+import { useState } from "react";
 
 
 export const ClaimCard = ({
@@ -29,8 +30,14 @@ export const ClaimCard = ({
     false: 'verdict-false/10 ',
     pending: 'verdict-pending/10 ',
   };
-  const file = base64ToFile(attachments, "image.png");
-  const imageUrl = URL.createObjectURL(file);
+  const [imageUrl, setImageUrl] = useState('');
+  
+  if(attachments){
+    const file = base64ToFile(attachments, "image.png");
+    const newImg = URL.createObjectURL(file)
+    setImageUrl(newImg) 
+
+  }
   return (
     <div className={`bg-${cardBgColor[verdict]} p-2 rounded-2xl border hover:shadow-lg h-fit`}>
       

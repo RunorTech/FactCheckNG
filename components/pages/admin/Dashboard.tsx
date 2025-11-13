@@ -89,7 +89,7 @@ const DashboardPage = () => {
                       <div className="flex-1 min-w-0">
                         <p className="font-medium truncate">{activity.title}</p>
                         <p className="text-muted-foreground text-xs">
-                          {activity.lga} • {new Date(activity.date).toLocaleDateString()}
+                          {activity.lga.name} • {new Date(activity.date).toLocaleDateString()}
                         </p>
                       </div>
                     </div>

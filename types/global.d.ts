@@ -22,7 +22,7 @@ interface ClaimCardProps {
   userId: string
   title: string
   description: string
-  attachments: string
+  attachments?: string
   lgaId: string
   category: string
   verdict: VerdictStatus 

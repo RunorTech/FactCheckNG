@@ -30,7 +30,7 @@ const VerdictsPage = () => {
   
   const filteredClaims = publishedClaims.filter(claim => {
     const matchesSearch = claim.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         claim.investigator?.toLowerCase().includes(searchQuery.toLowerCase());
+                         claim.investigatorId?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesVerdict = verdictFilter === 'all' || claim.verdict === verdictFilter;
     return matchesSearch && matchesVerdict;
   });
@@ -86,7 +86,7 @@ const VerdictsPage = () => {
                     <TableCell>
                       <VerdictBadge verdict={claim.verdict} size="sm" />
                     </TableCell>
-                    <TableCell>{claim.investigator || 'N/A'}</TableCell>
+                    <TableCell>{claim.investigatorId || 'N/A'}</TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {claim.verdictDate
                         ? new Date(claim.verdictDate).toLocaleDateString()

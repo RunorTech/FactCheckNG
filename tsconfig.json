@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "app/api/states/[id]/route.txt'"  ],
   "exclude": ["node_modules"]
 }
