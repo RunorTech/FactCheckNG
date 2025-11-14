@@ -75,7 +75,7 @@ const LGAsPage = () => {
                             return (
                               <Link
                                 key={lga}
-                                href={`/lgas/${encodeURIComponent(lga.toLowerCase().replace(/\s+/g, '-'))}`}
+                                href={`/lgas/${encodeURIComponent(lga?.toLowerCase().replace(/\s+/g, '-'))}`}
                                 className="flex items-center justify-between p-4 rounded-lg border bg-card hover:border-primary/50 hover:shadow-md transition-all"
                               >
                                 <span className="font-medium">{lga}</span>

@@ -74,6 +74,23 @@
   --color-sidebar-border: hsl(var(--sidebar-border));
   --color-sidebar-ring: hsl(var(--sidebar-ring));
   --color-sidebar: var(--sidebar);
+
+
+  --color-notification-info-border: hsl(var(--notification-info-border));
+  --color-notification-info-background: hsl(var(--notification-info-background));
+  --color-notification-info-icon: hsl(var(--notification-info-icon));
+
+  --color-notification-success-border: hsl(var(--notification-success-border));
+  --color-notification-success-background: hsl(var(--notification-success-background));
+  --color-notification-success-icon: hsl(var(--notification-success-icon));
+
+  --color-notification-warning-border: hsl(var(--notification-warning-border));
+  --color-notification-warning-background: hsl(var(--notification-warning-background));
+  --color-notification-warning-icon: hsl(var(--notification-warning-icon));
+
+  --color-notification-error-border: hsl(var(--notification-error-border));
+  --color-notification-error-background: hsl(var(--notification-error-background));
+  --color-notification-error-icon: hsl(var(--notification-error-icon));
 }
 
 :root {
@@ -145,6 +162,21 @@
   --sidebar-border: 240 3.7% 15.9%;
   --sidebar-ring: 142 76% 36%; */
   --sidebar: oklch(0.985 0 0);
+  --notification-info-border: hsl(211 73% 87%);
+  --notification-info-background: hsl(213 63% 94%);
+  --notification-info-icon: hsl(212 79% 47%);
+
+  --notification-success-border: hsl(135 41% 80%);
+  --notification-success-background: hsl(135 51% 93%);
+  --notification-success-icon: hsl(139 94% 25%);
+
+  --notification-warning-border: hsl(38 89% 86%);
+  --notification-warning-background: hsl(39 92% 95%);
+  --notification-warning-icon: hsl(38 89% 46%);
+
+  --notification-error-border: hsl(2 68% 84%);
+  --notification-error-background: hsl(2 67% 95%);
+  --notification-error-icon: hsl(2 81% 43%);
 }
 
 .dark {
@@ -213,6 +245,21 @@
   --sidebar-accent-foreground: 240 4.8% 95.9%;
   --sidebar-border: 240 3.7% 15.9%;
   --sidebar-ring: 142 76% 36%; */
+  --notification-info-border: hsl(211 73% 87%);
+  --notification-info-background: hsl(213 63% 94%);
+  --notification-info-icon: hsl(212 79% 47%);
+
+  --notification-success-border: hsl(135 41% 80%);
+  --notification-success-background: hsl(135 51% 93%);
+  --notification-success-icon: hsl(139 94% 25%);
+
+  --notification-warning-border: hsl(38 89% 86%);
+  --notification-warning-background: hsl(39 92% 95%);
+  --notification-warning-icon: hsl(38 89% 46%);
+
+  --notification-error-border: hsl(2 68% 84%);
+  --notification-error-background: hsl(2 67% 95%);
+  --notification-error-icon: hsl(2 81% 43%);
 }
 
 @layer base {

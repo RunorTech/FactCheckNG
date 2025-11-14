@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +14,12 @@ import { Toast } from './toast';
 
 import './toast.css';
 import { SharedReduxState } from '@/types/reduxStore';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+
+
 
 export enum ToastType {
   error = 'danger',
@@ -47,6 +54,12 @@ const toastContentClassNameMap = {
       'border-notification-success-border bg-notification-success-background',
   },
 };
+const toastIconMap: Record<ToastType, any> = {
+  [ToastType.error]: ErrorOutlineIcon,
+  [ToastType.info]: InfoOutlinedIcon,
+  [ToastType.warning]: WarningAmberOutlinedIcon,
+  [ToastType.success]: CheckCircleOutlineIcon,
+};
 
 export const MToast = () => {
   const {
@@ -58,7 +71,7 @@ export const MToast = () => {
   } = useSelector<CombinedReducerType, SharedReduxState['toastData']>(
     ({ shared }) => shared.toastData,
   );
-
+  const Icon = toastIconMap[type as ToastType];
   const reduxDispatch = useDispatch();
 
   const handleDismiss = () => {
@@ -75,9 +88,9 @@ export const MToast = () => {
               toastContentClassNameMap[type as ToastType].container,
             )}
           >
-            <CancelOutlinedIcon
+            <Icon
               className={cn(
-                'scale-[0.6]',
+                'scale-[0.9]',
                 toastContentClassNameMap[type as ToastType].icon,
               )}
             />

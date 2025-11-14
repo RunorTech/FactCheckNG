@@ -69,6 +69,6 @@ export const getClaimById = (id: string) => {
 
 export const getClaimsByLGA = (lga: string) => {
   return mockClaims.filter(
-    (claim) => claim.lga.name.toLowerCase() === lga.toLowerCase()
+    (claim) => claim?.lga?.name.toLowerCase() === lga?.toLowerCase()
   );
 };

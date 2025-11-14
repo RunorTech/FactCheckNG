@@ -6,5 +6,9 @@ export const allClaimsService: ServiceInterface<GetClaimRequestProps, GetClaimRe
   path: sharedApis.claims,
   method: ApiMethods.GET,
 };
+export const submitClaimService: ServiceInterface<SubmitClaimRequestProps, SubmitClaimResponseProps> = {
+  path: sharedApis.claims,
+  method: ApiMethods.POST,
+};
 
 

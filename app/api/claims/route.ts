@@ -44,7 +44,7 @@ try {
          data: {
         id: crypto.randomUUID(),
         fullName: `${body.firstName} ${body.lastName}`,
-        location: body.state,
+        location: body.location,
         bio: body.career,
       },
     })
@@ -91,7 +91,7 @@ try {
       },
     })
 
-    return jsonResponse({ message: "Claim created successfully", claim }, 201)
+    return jsonResponse({ message: "Claim created successfully"}, 201)
 
 } catch (err: any) {
     console.log(err)

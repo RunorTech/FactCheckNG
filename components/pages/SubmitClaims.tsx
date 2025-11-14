@@ -33,6 +33,9 @@ import {
 } from "@/components/ui/command"
 import { Button } from "@/components/ui/button"
 import { careers, fileToBase64 } from '@/mock/constant';
+import { useToast } from '@/utils/useToast';
+import { reverseGeocode } from '@/hooks/helpers/getGeoLocation';
+import { useSubmitClaims } from '@/hooks/useSubmitClaims';
 
 
 
@@ -66,6 +69,8 @@ const SubmitClaimsPage = () => {
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const [open, setOpen] = useState(false)
   const [selectedCareer, setSelectedCareer] = useState("")
+  const { errorToast} = useToast();
+  const { submitClaim, isSubmitClaimPending } = useSubmitClaims()
 
   const submitClaimForm = useForm<SubmitClaimForm>({
     resolver: zodResolver(submitClaimSchema),
@@ -93,30 +98,23 @@ const SubmitClaimsPage = () => {
       ...formData,
       attachments: attachmentsBase64,
     };
-    const response = navigator.geolocation.getCurrentPosition(
+    navigator.geolocation.getCurrentPosition(
       async (pos) => {
+        const location = await reverseGeocode(pos.coords.latitude, pos.coords.longitude)
+
         const dataWithLocation = {
           ...payload,
-          ...pos
+          location: JSON.stringify(location)
         }
-        const res = await fetch('/api/claims', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(dataWithLocation),
-        })
-        return res
+         await submitClaim(dataWithLocation)
+       
+        return 
       },
       async (err) => {
-        // const res = await fetch('/api/claims', {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify(payload),
-        // })
-        console.info(err)
-        return 
+        errorToast("Failed to get location please allow")
+        return err
       }
     );
-    console.log(response)
   };
 
 
@@ -384,7 +382,7 @@ const SubmitClaimsPage = () => {
               />
 
               <div className="flex gap-4">
-                <Button type="submit" onClick={submitClaimForm.handleSubmit(handleSubmit)} size="lg" className="flex-1">
+                <Button disabled={isSubmitClaimPending} type="submit" onClick={submitClaimForm.handleSubmit(handleSubmit)} size="lg" className="flex-1">
                   Submit Claim
                 </Button>
                 <Button type="button" variant="outline" size="lg">

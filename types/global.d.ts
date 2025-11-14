@@ -10,13 +10,30 @@ declare module "*.webm";
 interface GetClaimRequestProps {
   data: string
 }
+
+interface SubmitClaimRequestProps extends  SubmitClaimForm {
+location: string
+}
+interface SubmitClaimResponseProps {
+  message: string
+}
+
 type ClaimStatus = "verified" | "unverified" | "false";
 type VerdictStatus = "true" | "false" | "pending" | "inconclusive";
 
 interface GetClaimResponseProps {
   claims: ClaimCardProps[]
 }
-
+interface locationResponseProps {
+  ISO3166_2_lvl4: string;
+  amenity: string;
+  country: string;
+  country_code: string;
+  county: string;
+  postcode: string;
+  road: string;
+  state: string;
+}
 interface ClaimCardProps {
   id: string
   userId: string
