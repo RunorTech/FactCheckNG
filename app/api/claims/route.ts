@@ -5,6 +5,7 @@
 // -----------------------------
 import { prisma } from '@/lib/prisma'
 import { jsonResponse, errorResponse } from '../_helpers/response'
+import { getIO } from "@/lib/socket";
 
 
 export async function GET(req: Request) {
@@ -35,6 +36,7 @@ export async function POST(req: Request) {
 try {
  const body = await req.json()
     // console.log("Incoming body:", body)
+     const io = getIO();
     let profile;
     const existingProfile = await prisma.profile.findUnique({
       where: { fullName: `${body.firstName} ${body.lastName}` },
@@ -90,6 +92,10 @@ try {
         lgaId: lga.id,
       },
     })
+    if(claim.id){
+    io?.emit("claim:created", { timestamp: new Date().toISOString(),});
+    }
+
 
     return jsonResponse({ message: "Claim created successfully"}, 201)
 

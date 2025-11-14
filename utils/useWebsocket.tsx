@@ -68,13 +68,13 @@ export function useWebsocket<EventResponse extends object>({
       (event: string) => (resp: WebSocketDataProps<EventResponse>) => {
         const canSetData = watchParams
           ? Object.keys(watchParams).reduce((acc, param) => {
-              if (!acc) return acc;
-              if (resp[param]) {
-                return resp[param] === watchParams[param];
-              }
+            if (!acc) return acc;
+            if (resp[param]) {
+              return resp[param] === watchParams[param];
+            }
 
-              return acc;
-            }, true)
+            return acc;
+          }, true)
           : true;
 
         if (canSetData) {
@@ -100,23 +100,21 @@ export function useWebsocket<EventResponse extends object>({
       };
     }
 
-    return () => {};
+    return () => { };
   }, [socket, subEvent, watchParams]);
 
   return { data, emitEvent };
 }
 
 export function WsProvider({ children }: { children: React.ReactNode }) {
-  const socket = useMemo(
-    () =>
-      io(process.env.NEXT_PUBLIC_API_URL || '', {
-        transports: ['websocket', 'polling'],
-      }),
-    [],
-  );
-
+  const socket = useMemo(() => {
+    return io("", {
+      path: "/socket.io", // match server path
+      transports: ["websocket", "polling"],
+    });
+  }, []);
   useEffect(() => {
-    socket.on('connect', () => {
+    socket.on('connection', () => {
       console.info(': WS connected');
     });
     socket.on('disconnect', () => {

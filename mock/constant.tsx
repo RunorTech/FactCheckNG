@@ -141,3 +141,9 @@ export function timeAgoOrIn(dateString: string): string {
 
     return diff < 0 ? `${result} ago` : `in ${result}`;
 }
+
+export const allClaimsEvents = {
+    created: "claim:created",
+    updated: "claim:updated",
+    deleted: "claim:deleted",
+};

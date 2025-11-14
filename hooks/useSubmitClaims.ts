@@ -1,9 +1,11 @@
 import { submitClaimService } from "@/service/service";
 import { useMutationService } from "@/utils/useMutationService";
 import { useToast } from "@/utils/useToast";
+import { useRouter } from "next/navigation";
 
 export const useSubmitClaims = () => {
   const { errorToast, successToast } = useToast();
+  const router = useRouter()
   const {
     mutateAsync: submitClaimMutateAsync,
     isPending: isSubmitClaimPending,
@@ -12,6 +14,7 @@ export const useSubmitClaims = () => {
     options: {
       onSuccess: async (response) => {
           successToast(response.message)
+          router.push("/claims")
        
       },
       onError: ({ message }) => {

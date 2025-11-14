@@ -8,11 +8,13 @@ import Loading from '@/context/loading'
 import { ReduxProviders } from "@/context/ReduxContext/reduxContext";
 import { MToast } from "@/components/Toast";
 import { ReactQueryClientProvider } from "./ReactQueryClientProvider/reactQueryClientProvider";
+import { WsProvider } from "@/utils/useWebsocket";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <Suspense fallback={<Loading/>}>
       <ReactQueryClientProvider>
+        <WsProvider>
         <ReduxProviders>
           <NextThemesProvider
             attribute="class"
@@ -26,6 +28,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             
           </NextThemesProvider>
         </ReduxProviders>
+        </WsProvider>
       </ReactQueryClientProvider>
     </Suspense>
   )
