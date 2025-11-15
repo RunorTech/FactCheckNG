@@ -1,7 +1,6 @@
 // server.js
 import { createServer } from "http";
 import next from "next";
-import { initIO } from "./lib/socket.js";
 
 const port = parseInt(process.env.PORT || "3000", 10);
 const dev = process.env.NODE_ENV !== "production";
@@ -14,7 +13,6 @@ app.prepare().then(() => {
     handle(req, res);
   });
 
-  initIO(server);
 
   server.listen(port, () => {
     console.log(`> Server ready on http://localhost:${port}`);

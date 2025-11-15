@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   createContext,
   useCallback,
@@ -108,13 +107,13 @@ export function useWebsocket<EventResponse extends object>({
 
 export function WsProvider({ children }: { children: React.ReactNode }) {
   const socket = useMemo(() => {
-    return io("", {
+    return io("https://ws-socket-production.up.railway.app", {
       path: "/socket.io", // match server path
       transports: ["websocket", "polling"],
     });
   }, []);
   useEffect(() => {
-    socket.on('connection', () => {
+    socket.on('connect', () => {
       console.info(': WS connected');
     });
     socket.on('disconnect', () => {
@@ -124,7 +123,7 @@ export function WsProvider({ children }: { children: React.ReactNode }) {
     return () => {
       socket.removeAllListeners();
     };
-  }, []);
+  }, [socket]);
 
   return <WsContext.Provider value={{ socket }}>{children}</WsContext.Provider>;
 }
