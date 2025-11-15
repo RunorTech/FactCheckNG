@@ -2,11 +2,10 @@
   "name": "fact-check-ng",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "node server.js",
+    "dev": "next dev",
     "build": "prisma generate && next build",
-    "start": "node server.js",
+    "start": "next dev",
     "lint": "eslint",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",
