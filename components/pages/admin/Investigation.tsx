@@ -14,16 +14,27 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Calendar, Plus, X } from 'lucide-react';
-import { getClaimById } from '@/mock/claims';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { useParams, useRouter } from 'next/navigation';
+import {  useRouter } from 'next/navigation';
 import { VerdictBadge } from '@/components/custom/ui/VerdictBadge';
+import { useGetClaim } from '@/hooks/useGetClaim';
 
 const Investigation = () => {
-  const { id } = useParams();
+  // const { id } = useParams();
   const router = useRouter();
-  const claim = getClaimById('1');
+  // const claim = getClaimById('1');
+   const [enableGetClaim, setEnableGetClaim] = useState(true)
+  
+    const { claim: Claim_, isLoadingClaim } = useGetClaim(enableGetClaim);
+  
+    const claim = Claim_?.claim
+  
+    useEffect(() => {
+      if (isLoadingClaim || !enableGetClaim) return;
+  
+      Promise.resolve().then(() => setEnableGetClaim(false));
+    }, [isLoadingClaim, enableGetClaim]);
   
   const [verdict, setVerdict] = useState(claim?.verdict || 'pending');
   const [summary, setSummary] = useState(claim?.verdictSummary || '');

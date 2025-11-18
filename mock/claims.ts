@@ -48,10 +48,10 @@ export interface Claim {
 
 export const mockClaims = mocks as unknown as ClaimCardProps[];
 
-export const getLGAsByState = () => {
+export const getLGAsByState = (claims?: ClaimCardProps[] ) => {
   const lgas: Record<string, string[]> = {};
 
-  mockClaims.forEach((claim) => {
+  claims?.forEach((claim) => {
     if (!lgas[claim?.lga?.state?.name]) {
       lgas[claim?.lga?.state?.name] = [];
     }

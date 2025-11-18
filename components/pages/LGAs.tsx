@@ -8,7 +8,7 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import { Search, ChevronDown, MapPin } from 'lucide-react';
-import { getLGAsByState, getClaimsByLGA } from '@/mock/claims';
+import { getClaimsByLGA, getLGAsByState } from '@/mock/claims';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 

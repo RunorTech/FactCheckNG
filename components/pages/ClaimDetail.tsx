@@ -9,14 +9,12 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import { MapPin, Calendar, Eye, ExternalLink, AlertTriangle, Share2, ChevronDown } from 'lucide-react';
-import { mockClaims } from '@/mock/claims';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { VerdictBadge } from '../custom/ui/VerdictBadge';
 import { ClaimCard } from '../custom/ui/ClaimCard';
 import { useGetClaim } from '@/hooks/useGetClaim';
 import Loading from '@/context/loading';
-import { useGetAllClaims } from '@/hooks/useGetAllClaims';
 import Masonry from 'react-masonry-css';
 import { useGetRelatedClaim } from '@/hooks/useGetRelatedClaim';
 

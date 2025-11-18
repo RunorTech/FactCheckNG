@@ -3,25 +3,36 @@ import { Search, TrendingUp, MapPin, CheckCircle2 } from 'lucide-react';
 import { ClaimCard } from '@/components/custom/ui/ClaimCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { mockClaims, getLGAsByState } from '@/mock/claims';
+import { getLGAsByState } from '@/mock/claims';
 import heroBg from '@/public/hero-bg.jpg';
 import Link from 'next/link';
 import SocialLinks from '../custom/ui/Socials';
 import Masonry from 'react-masonry-css';
+import { useEffect, useState } from 'react';
+import { useGetAllClaims } from '@/hooks/useGetAllClaims';
 
 const HomePage = () => {
-  const trendingClaims = mockClaims.slice(0, 3);
-  const recentVerified = mockClaims.filter(c => c.verdict !== 'pending').slice(0, 3);
-  const lgasByState = getLGAsByState();
+  const [enableGetClaim, setEnableGetClaim] = useState(true)
+
+  const { allClaims, isLoadingClaims } = useGetAllClaims(enableGetClaim);
+
+  useEffect(() => {
+    if (isLoadingClaims || !enableGetClaim) return;
+
+    Promise.resolve().then(() => setEnableGetClaim(false));
+  }, [isLoadingClaims, enableGetClaim]);
+  const trendingClaims = allClaims?.claims.slice(0, 3);
+  const recentVerified = allClaims?.claims.filter(c => c.verdict === 'true').slice(0, 3);
+  const lgasByState = getLGAsByState(allClaims?.claims);
   const topStates = Object.entries(lgasByState).slice(0, 6);
   return (
     <div className="flex min-h-screen flex-col">
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-primary/25 to-background py-20 overflow-hidden min-h-[70vh]">
-        <div 
+        <div
           className="absolute inset-0 opacity-9"
-          style={{ 
+          style={{
             backgroundImage: `url(${heroBg.src})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center'
@@ -33,11 +44,11 @@ const HomePage = () => {
               <CheckCircle2 className="h-4 w-4" />
               <span>Verified by Trusted Researchers</span>
             </div>
-            
+
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
               Truth Matters in Nigeria
             </h1>
-            
+
             <p className="text-xl text-muted-foreground">
               Search, verify, and track claims across all Local Government Areas
             </p>
@@ -86,13 +97,13 @@ const HomePage = () => {
             </Link>
           </div>
 
-          
+
           <Masonry
             breakpointCols={{ default: 2, 768: 1 }}
             className="flex gap-6"
             columnClassName="flex flex-col gap-6"
           >
-            {trendingClaims.map((claim) => (
+            {trendingClaims?.map((claim) => (
               <ClaimCard key={claim.id} {...claim} />
             ))}
           </Masonry>
@@ -117,7 +128,7 @@ const HomePage = () => {
             className="flex gap-6"
             columnClassName="flex flex-col gap-6"
           >
-            {recentVerified.map((claim) => (
+            {recentVerified?.map((claim) => (
               <ClaimCard key={claim.id} {...claim} />
             ))}
           </Masonry>

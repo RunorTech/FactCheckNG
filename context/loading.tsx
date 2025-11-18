@@ -3,7 +3,7 @@
 
 function Loading() {
   return (
-    <div className="w-full h-full flex justify-center items-center">
+    <div className="container w-full h-full flex justify-center items-center">
       <div className="relative h-30 flex justify-center items-center">
         <div className="loader relative mx-auto my-5"></div>
         <div className="absolute bottom-0">

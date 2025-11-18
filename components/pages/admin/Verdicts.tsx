@@ -17,18 +17,27 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Search, Eye } from 'lucide-react';
-import { mockClaims } from '@/mock/claims';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { VerdictBadge } from '@/components/custom/ui/VerdictBadge';
 import Link from 'next/link';
+import { useGetAllClaims } from '@/hooks/useGetAllClaims';
 
 const VerdictsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [verdictFilter, setVerdictFilter] = useState('all');
+  const [enableGetClaim, setEnableGetClaim] = useState(true)
+
+    const { allClaims, isLoadingClaims } = useGetAllClaims(enableGetClaim);
   
-  const publishedClaims = mockClaims.filter(c => c.verdict !== 'pending');
+    useEffect(() => {
+      if (isLoadingClaims || !enableGetClaim) return;
   
-  const filteredClaims = publishedClaims.filter(claim => {
+      Promise.resolve().then(() => setEnableGetClaim(false));
+    }, [isLoadingClaims, enableGetClaim]);
+  
+  const publishedClaims = allClaims?.claims.filter(c => c.verdict !== 'pending');
+  
+  const filteredClaims = publishedClaims?.filter(claim => {
     const matchesSearch = claim.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          claim.investigatorId?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesVerdict = verdictFilter === 'all' || claim.verdict === verdictFilter;
@@ -78,7 +87,7 @@ const VerdictsPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredClaims.map((claim) => (
+                {filteredClaims?.map((claim) => (
                   <TableRow key={claim.id}>
                     <TableCell className="font-medium max-w-md truncate">
                       {claim.title}
@@ -105,7 +114,7 @@ const VerdictsPage = () => {
             </Table>
           </div>
 
-          {filteredClaims.length === 0 && (
+          {filteredClaims?.length === 0 && (
             <div className="text-center py-12 border rounded-lg">
               <p className="text-muted-foreground">No verdicts found matching your criteria.</p>
             </div>

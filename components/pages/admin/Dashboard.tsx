@@ -3,11 +3,21 @@ import { StatCard } from '@/components/admin/StatCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileText, CheckCircle, XCircle, Clock, TrendingUp } from 'lucide-react';
 import { mockAnalyticsStats, mockTopLGAs } from '@/mock/analytics';
-import { mockClaims } from '@/mock/claims';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useEffect, useState } from 'react';
+import { useGetAllClaims } from '@/hooks/useGetAllClaims';
 
 const DashboardPage = () => {
-  const recentActivity = mockClaims.slice(0, 5).map(claim => ({
+   const [enableGetClaim, setEnableGetClaim] = useState(true)
+  
+    const { allClaims, isLoadingClaims } = useGetAllClaims(enableGetClaim);
+  
+    useEffect(() => {
+      if (isLoadingClaims || !enableGetClaim) return;
+  
+      Promise.resolve().then(() => setEnableGetClaim(false));
+    }, [isLoadingClaims, enableGetClaim]);
+  const recentActivity = allClaims?.claims.slice(0, 5).map(claim => ({
     title: claim.title,
     lga: claim.lga,
     date: claim.verdictDate || claim.submittedDate,
@@ -78,7 +88,7 @@ const DashboardPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {recentActivity.map((activity, idx) => (
+                  {recentActivity?.map((activity, idx) => (
                     <div key={idx} className="flex items-start gap-3 text-sm">
                       <div className={`mt-1 h-2 w-2 rounded-full flex-shrink-0 ${
                         activity.verdict === 'true' ? 'bg-verdict-true' :
