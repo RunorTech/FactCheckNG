@@ -1,16 +1,17 @@
-import { submitClaimService } from "@/service/service";
+import { sharedApis } from "@/mock/apiUrl";
+import { deleteClaimService} from "@/service/service";
 import { useMutationService } from "@/utils/useMutationService";
 import { useToast } from "@/utils/useToast";
 // import { useRouter } from "next/navigation";
 
-export const useSubmitClaims = () => {
+export const useDeleteClaim = () => {
   const { errorToast, successToast } = useToast();
   // const router = useRouter()
   const {
-    mutateAsync: submitClaimMutateAsync,
-    isPending: isSubmitClaimPending,
+    mutateAsync: deleteClaimMutateAsync,
+    isPending: isDeleteClaimPending,
   } = useMutationService({
-    service: submitClaimService,
+    service: deleteClaimService,
     options: {
       onSuccess: async (response) => {
           successToast(response.message)
@@ -23,11 +24,11 @@ export const useSubmitClaims = () => {
     },
   });
 
-  const submitClaim = async (data: SubmitClaimRequestProps) => {
-    await submitClaimMutateAsync({
-      ...data,
+  const deleteClaim = async (id: string) => {
+    await deleteClaimMutateAsync({
+      path: sharedApis.claim(id),
     });
   };
 
-  return { submitClaim, isSubmitClaimPending };
+  return { deleteClaim, isDeleteClaimPending };
 };

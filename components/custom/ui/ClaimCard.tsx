@@ -23,6 +23,7 @@ export const ClaimCard = ({
   lga,
   createdAt,
   attachments,
+  title
 }: ClaimCardProps) => {
   const cardBgColor = {
     true: 'verdict-true/10 ',
@@ -94,7 +95,11 @@ export const ClaimCard = ({
         </CardHeader>
 
         <CardContent className="space-y-3">
-          <Link href={`/claim/${id}`} className="block">
+          <h2 className="text-3xl">
+            {title}
+          </h2>
+          <p className="text-sm mb-2 text-muted-foreground">Description:</p>
+          <Link href={`/claims/${id}`} className="block">
             <p className="text-base leading-relaxed text-foreground hover:text-primary transition-colors">
               {description}
             </p>
@@ -102,7 +107,7 @@ export const ClaimCard = ({
 
           {imageUrl && (
             <Link
-              href={`/claim/${id}`}
+              href={`/claims/${id}`}
               className={`relative block w-full max-w-3xl aspect-[4/2] rounded-lg overflow-hidden border p-1 bg-${cardBgColor[verdict]} hover:opacity-90 transition-opacity`}
             >
               <Image
@@ -120,13 +125,13 @@ export const ClaimCard = ({
           
             <div className="rounded-lg border bg-muted/50 p-3 mt-3">
               <a
-              href={`/claim/${id}`}
+              href={`/claims/${id}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-muted-foreground hover:text-primary flex items-center space-x-2"
               >
                 <span className="font-medium">Read More:</span>
-              <span className="truncate hover:underline">{`/claim/${id}`}</span>
+              <span className="truncate hover:underline">{`/claims/${id}`}</span>
               </a>
             </div>
          
@@ -142,7 +147,7 @@ export const ClaimCard = ({
                 <span>{likes}</span>
               </Button>
               <Button variant="ghost" size="sm" className="space-x-2" asChild>
-                <Link href={`/claim/${id}`}>
+                <Link href={`/claims/${id}`}>
                   <MessageCircle className="h-5 w-5" />
                   <span>{comments}</span>
                 </Link>

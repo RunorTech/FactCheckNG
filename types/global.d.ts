@@ -7,8 +7,14 @@ interface CombinedReducerType {
 
 declare module "*.webm";
 
-interface GetClaimRequestProps {
+interface GetClaimsRequestProps {
   data: string
+}
+interface GetClaimRequestProps {
+  id: string
+}
+interface DeleteClaimRequestProps {
+  path: string
 }
 
 interface SubmitClaimRequestProps extends  SubmitClaimForm {
@@ -21,8 +27,11 @@ interface SubmitClaimResponseProps {
 type ClaimStatus = "verified" | "unverified" | "false";
 type VerdictStatus = "true" | "false" | "pending" | "inconclusive";
 
-interface GetClaimResponseProps {
+interface GetClaimsResponseProps {
   claims: ClaimCardProps[]
+}
+interface GetClaimResponseProps {
+  claim: ClaimCardProps
 }
 interface locationResponseProps {
   ISO3166_2_lvl4: string;

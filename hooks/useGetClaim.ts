@@ -1,41 +1,42 @@
+import { sharedApis } from "@/mock/apiUrl";
 import { allClaimsEvents, sharedQueryKeys } from "@/mock/constant";
-import { allClaimsService } from "@/service/service";
+import {  claimService } from "@/service/service";
 import { useQueryService } from "@/utils/useQueryService";
 import { useWebsocket } from "@/utils/useWebsocket";
+import { useParams } from "next/navigation";
 import { useEffect } from "react";
 
-export function useGetAllClaims(enabledClaims: boolean) {
+export function useGetClaim(enabledClaim: boolean) {
+    const { id } = useParams();
+
   const { data: getAllClaimsWSEvents } = useWebsocket({
     subEvent: allClaimsEvents.created,
   });
-   const { data: deleteClaimsWSEvents } = useWebsocket({
-    subEvent: allClaimsEvents.deleted,
-  });
   const {
-    data: allClaims,
-    isPending: isLoadingClaims,
+    data: claim,
+    isPending: isLoadingClaim,
     isError,
     refetch,
-  } = useQueryService<GetClaimsRequestProps, GetClaimsResponseProps>({
-    service: allClaimsService,
+  } = useQueryService<GetClaimRequestProps, GetClaimResponseProps>({
+    service:  {...claimService,  path: sharedApis.claim(id as string)},
     options: {
-      enabled: enabledClaims,
+      enabled: enabledClaim,
       keys: [`${sharedQueryKeys.getClaims}`],
     },
   });
 
    useEffect(() => {
-    if (getAllClaimsWSEvents || deleteClaimsWSEvents) {
+    if (getAllClaimsWSEvents) {
       refetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getAllClaimsWSEvents, deleteClaimsWSEvents]);
+  }, [getAllClaimsWSEvents]);
 
 
   return {
-    allClaims,
+    claim,
     isError,
     refetch,
-    isLoadingClaims
+    isLoadingClaim
   }
 }

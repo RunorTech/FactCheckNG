@@ -6,7 +6,7 @@ const AllClaimsLayout = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <div className="min-h-screen bg-background">
-            <div className="container lg:flex lg:gap-4 py-4">
+            <div className="container lg:flex lg:justify-center lg:gap-4 py-4">
                 {/* Left Sidebar */}
                 <FeedSidebar />
                 {/* Main Feed */}

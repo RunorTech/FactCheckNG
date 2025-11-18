@@ -6,6 +6,7 @@ import { ClaimCard } from '../custom/ui/ClaimCard';
 import { CreatePostCard } from '../custom/ui/CreatePostCard';
 import { useEffect, useState } from 'react';
 import { useGetAllClaims } from '@/hooks/useGetAllClaims';
+import Loading from '@/context/loading';
 
 const AllClaims = () => {
   // const feedClaims = mockClaims;
@@ -18,6 +19,9 @@ const AllClaims = () => {
 
     Promise.resolve().then(() => setEnableGetClaim(false));
   }, [isLoadingClaims, enableGetClaim]);
+
+ 
+
   return (
 
     <div className="flex-1 max-w-2xl mx-auto">
@@ -36,7 +40,8 @@ const AllClaims = () => {
       {/* Create Post */}
       <CreatePostCard />
 
-      {!isLoadingClaims && (
+     
+      {isLoadingClaims ? (<Loading />) : (
         <div className="space-y-4">
           {allClaims?.claims?.map((claim) => (
             <ClaimCard key={claim.id} {...claim} />

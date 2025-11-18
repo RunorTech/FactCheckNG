@@ -108,6 +108,10 @@ export const base64ToFile = (base64: string, fileName: string): File => {
 };
 export const sharedQueryKeys = {
     getClaims: "GET_CLAIMS",
+    getClaim: "GET_CLAIM",
+    getRelatedClaim: "GET_RELATED_CLAIM",
+
+
 };
 
 export function timeAgoOrIn(dateString: string): string {

@@ -6,6 +6,7 @@
 import { prisma } from '@/lib/prisma'
 import { jsonResponse, errorResponse } from '../../_helpers/response'
 import { NextRequest } from 'next/server'
+import { emitWsEvent } from '@/lib/socket'
 
 export async function GET(_req: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
@@ -24,7 +25,7 @@ export async function GET(_req: NextRequest, context: { params: Promise<{ id: st
     })
 
     if (!claim) return errorResponse('Claim not found', 404)
-    return jsonResponse(claim)
+    return jsonResponse({claim: claim})
   } catch (err: any) {
     return errorResponse(err.message)
   }
@@ -62,7 +63,10 @@ export async function DELETE(_req: NextRequest, context: { params: Promise<{ id:
   try {
     const { id } = await context.params
     await prisma.claim.delete({ where: { id } })
-    return new Response(null, { status: 204 })
+    await emitWsEvent("claim:deleted", new Date().toISOString());
+        
+    return jsonResponse({ message: "Claim deleted successfully"}, 201)
+    // return new Response(null, { status: 204 })
   } catch (err: any) {
     return errorResponse(err.message)
   }

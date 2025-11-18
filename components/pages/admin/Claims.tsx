@@ -17,22 +17,33 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Search, Eye, UserPlus, Trash2 } from 'lucide-react';
-import { mockClaims } from '@/mock/claims';
-import { useState } from 'react';
+// import { mockClaims } from '@/mock/claims';
+import { useEffect, useState } from 'react';
 import { VerdictBadge } from '@/components/custom/ui/VerdictBadge';
 import Link from 'next/link';
+import { useGetAllClaims } from '@/hooks/useGetAllClaims';
+import { useDeleteClaim } from '@/hooks/useDeleteClaim';
 
 const ClaimsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+    const [enableGetClaim, setEnableGetClaim] = useState(true)
+  
+    const { allClaims, isLoadingClaims } = useGetAllClaims(enableGetClaim);
+  
+    useEffect(() => {
+      if (isLoadingClaims || !enableGetClaim) return;
+  
+      Promise.resolve().then(() => setEnableGetClaim(false));
+    }, [isLoadingClaims, enableGetClaim]);
 
-  const filteredClaims = mockClaims.filter(claim => {
+  const filteredClaims = allClaims?.claims.filter(claim => {
     const matchesSearch = claim.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          claim?.lga?.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'all' || claim.verdict === statusFilter;
     return matchesSearch && matchesStatus;
   });
-
+  const { deleteClaim, isDeleteClaimPending } = useDeleteClaim()
   // TODO: connect to backend for claim management
 
   return (
@@ -81,7 +92,7 @@ const ClaimsPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredClaims.map((claim) => (
+                {filteredClaims?.map((claim) => (
                   <TableRow key={claim.id}>
                     <TableCell className="font-mono text-sm">#{claim.id}</TableCell>
                     <TableCell className="font-medium max-w-xs truncate">
@@ -97,7 +108,7 @@ const ClaimsPage = () => {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <Link href={`/admin/claims/${claim.id}`}>
+                        <Link href={`/claims/${claim.id}`}>
                           <Button variant="ghost" size="icon" title="View">
                             <Eye className="h-4 w-4" />
                           </Button>
@@ -105,7 +116,7 @@ const ClaimsPage = () => {
                         <Button variant="ghost" size="icon" title="Assign">
                           <UserPlus className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" title="Delete">
+                        <Button onClick={() => deleteClaim(claim.id)} disabled={isDeleteClaimPending} variant="ghost" size="icon" title="Delete">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -116,7 +127,7 @@ const ClaimsPage = () => {
             </Table>
           </div>
 
-          {filteredClaims.length === 0 && (
+          {filteredClaims?.length === 0 && (
             <div className="text-center py-12 border rounded-lg">
               <p className="text-muted-foreground">No claims found matching your criteria.</p>
             </div>

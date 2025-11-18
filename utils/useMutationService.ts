@@ -41,7 +41,7 @@ export function useMutationService<Req extends object, Resp extends object>(
     mutationFn: async (data) =>
       client.request<Req, Resp>({
         ...service,
-        data,
+        ...data,
         options: { isFormData, isDownload, isPdf, canShare, fileName },
       }),
   })

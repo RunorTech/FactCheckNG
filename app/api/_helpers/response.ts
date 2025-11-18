@@ -8,5 +8,5 @@ headers: { 'Content-Type': 'application/json' }
 
 
 export function errorResponse(message: string, status = 500) {
-return jsonResponse({ error: message }, status)
+return jsonResponse({ message: message }, status)
 }

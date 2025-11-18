@@ -5,7 +5,7 @@
 // -----------------------------
 import { prisma } from '@/lib/prisma'
 import { jsonResponse, errorResponse } from '../_helpers/response'
-import { ws } from '@/lib/socket'
+import { emitWsEvent } from '@/lib/socket'
 
 export async function GET(req: Request) {
 try {
@@ -90,16 +90,15 @@ try {
         lgaId: lga.id,
       },
     })
-    if(claim.id){
-    ws?.emit("claim:created", { timestamp: new Date().toISOString(),});
-    }
 
-
+    if(!claim.id) return jsonResponse({ message: "failed to create claim image size is too large"}, 401)
+      
+    await emitWsEvent("claim:created", new Date().toISOString());
+    
     return jsonResponse({ message: "Claim created successfully"}, 201)
 
 } catch (err: any) {
-    console.log(err)
 
-return errorResponse(err.message)
+return errorResponse(err.message, 109)
 }
 }
