@@ -3,7 +3,6 @@ import { Home, MapPin, TrendingUp, Users, Settings, BookOpen } from 'lucide-reac
 export const mainLinks = [
     { icon: Home, label: 'Feed', path: '/' },
     { icon: MapPin, label: 'Browse LGAs', path: '/lgas' },
-    { icon: TrendingUp, label: 'Trending', path: '/trending' },
     { icon: Users, label: 'Community', path: '/user' },
     { icon: BookOpen, label: 'About', path: '/about' },
 ];
@@ -110,9 +109,11 @@ export const sharedQueryKeys = {
     getClaims: "GET_CLAIMS",
     getClaim: "GET_CLAIM",
     getRelatedClaim: "GET_RELATED_CLAIM",
+    getUsers: "GET_USERS"
 
 
 };
+export const DEFAULT_DEBOUNCE_DELAY = 300
 
 export function timeAgoOrIn(dateString: string): string {
     const now = new Date();

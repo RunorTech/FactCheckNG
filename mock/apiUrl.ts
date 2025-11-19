@@ -1,8 +1,12 @@
-
+interface relatedClaims {
+  id: string,
+  lga: string
+}
 export const sharedApis = {
   claims: '/api/claims',
   claim: (id: string) => `/api/claims/${id}`,
-  relatedClaim: (lga: string) => `/api/claims/related/${lga}`,
+  relatedClaim: ({id, lga}: relatedClaims) => `/api/claims/${id}/related/${lga}`,
+  users: '/api/users'
 
 
 }

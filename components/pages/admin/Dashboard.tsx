@@ -17,7 +17,7 @@ const DashboardPage = () => {
   
       Promise.resolve().then(() => setEnableGetClaim(false));
     }, [isLoadingClaims, enableGetClaim]);
-  const recentActivity = allClaims?.claims.slice(0, 5).map(claim => ({
+  const recentActivity = allClaims?.slice(0, 5).map(claim => ({
     title: claim.title,
     lga: claim.lga,
     date: claim.verdictDate || claim.submittedDate,

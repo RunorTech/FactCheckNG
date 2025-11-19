@@ -13,13 +13,15 @@ import {
 import { Search, Edit, Ban, UserPlus } from 'lucide-react';
 import { mockUsers } from '@/mock/users';
 import { useState } from 'react';
+import { useGetAllUsers } from '@/hooks/useGetAllUsers';
 
 const UsersPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const {allUsers } = useGetAllUsers(true)
 
-  const filteredUsers = mockUsers.filter(user =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredUsers = allUsers.filter(user =>
+    user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.bio.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // TODO: connect to user management API
@@ -55,7 +57,7 @@ const UsersPage = () => {
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Role</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>Location</TableHead>
                   <TableHead>Verified Claims</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -63,24 +65,24 @@ const UsersPage = () => {
               <TableBody>
                 {filteredUsers.map((user) => (
                   <TableRow key={user.id}>
-                    <TableCell className="font-medium">{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
+                    <TableCell className="font-medium">{user.fullName}</TableCell>
+                    <TableCell>{user.bio}</TableCell>
                     <TableCell>
                       <Badge variant={
-                        user.role === 'admin' ? 'default' :
-                        user.role === 'researcher' ? 'secondary' :
+                        user.bio === 'admin' ? 'default' :
+                        user.bio === 'researcher' ? 'secondary' :
                         'outline'
                       }>
-                        {user.role}
+                        {user.bio}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge variant={
-                        user.status === 'active' ? 'default' :
-                        user.status === 'suspended' ? 'destructive' :
+                        user.location === 'active' ? 'default' :
+                        user.location === 'suspended' ? 'destructive' :
                         'secondary'
                       }>
-                        {user.status}
+                        {user.location}
                       </Badge>
                     </TableCell>
                     <TableCell>

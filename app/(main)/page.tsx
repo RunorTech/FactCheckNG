@@ -1,7 +1,7 @@
-import HomePage from "@/components/pages/home";
+import AllClaims from "@/components/pages/allClaims";
 
 export default function Home() {
   return (
-    <HomePage/>
+    <AllClaims />
   );
 }

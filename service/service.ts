@@ -6,11 +6,15 @@ export const allClaimsService: ServiceInterface<GetClaimsRequestProps, GetClaims
   path: sharedApis.claims,
   method: ApiMethods.GET,
 };
+export const allUsersService: ServiceInterface<GetClaimsRequestProps, GetClaimsResponseProps> = {
+  path: sharedApis.users,
+  method: ApiMethods.GET,
+};
 export const claimService: ServiceInterface<GetClaimRequestProps, GetClaimResponseProps> = {
   path: '',
   method: ApiMethods.GET,
 };
-export const relatedClaimService: ServiceInterface<Request, GetClaimsResponseProps> = {
+export const relatedClaimService: ServiceInterface<Request, GetRelatedClaimsResponseProps> = {
   path: '',
   method: ApiMethods.GET,
 };

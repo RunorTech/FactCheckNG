@@ -7,21 +7,21 @@ import {
 } from '@tanstack/react-query';
 
 declare global {
-  interface PaginationData {
-    count?: number;
-    delta?: number;
-    pos?: number;
-  }
 
+ interface ResponseData {
+    page?: number | string
+    count?: number
+    data?: Array[]
+  }
+    interface PageParams {
+    page: number | string
+  }
   interface ServiceMetaData {
     totalServicesWorth?: number;
   }
   interface ProductMetaData {
     totalProductsWorth?: number;
   }
-
-  type PageParams = Omit<PaginationData, 'count'>;
-
   interface UseInfinityQueryServiceProps<Req, Resp> {
     service: ServiceInterface<Req, Resp>;
     requestPayload?: Req;

@@ -24,9 +24,9 @@ export const useSubmitClaims = () => {
   });
 
   const submitClaim = async (data: SubmitClaimRequestProps) => {
-    await submitClaimMutateAsync({
-      ...data,
-    });
+    await submitClaimMutateAsync(
+      data,
+    );
   };
 
   return { submitClaim, isSubmitClaimPending };

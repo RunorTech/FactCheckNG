@@ -8,32 +8,65 @@ import { jsonResponse, errorResponse } from '../_helpers/response'
 import { emitWsEvent } from '@/lib/socket'
 
 export async function GET(req: Request) {
-try {
-const url = new URL(req.url)
-const lgaId = url.searchParams.get('lgaId')
-const category = url.searchParams.get('category')
+  try {
+    const url = new URL(req.url)
+    const lgaId = url.searchParams.get('lgaId')
+    const category = url.searchParams.get('category')
+    const page = Number(url.searchParams.get("page") || 1)
+    const limit = Number(url.searchParams.get("limit") || 3)
+    const query = url.searchParams.get("query")
 
+    const skip = (page - 1) * limit
 
-const where: any = {}
-if (lgaId) where.lgaId = lgaId
-if (category) where.category = category
+    const where: any = {}
+    if (lgaId) where.lgaId = lgaId
+    if (category) where.category = category
 
+    // 1️⃣ count total rows
+    const total_claims = await prisma.claim.count({ where })
 
-const claims = await prisma.claim.findMany({
-where,
-include: { lga: { include: { state: true } }, evidence: true, citations: true, comments: true, profile: true, likes: true }
-})
+    // 2️⃣ fetch paginated rows
+    const claims = await prisma.claim.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+      include: {
+        lga: { include: { state: true } },
+        evidence: true,
+        citations: true,
+        comments: true,
+        profile: true,
+        likes: true,
+      }
+    })
 
-return jsonResponse({claims: claims})
-} catch (err: any) {
-return errorResponse(err.message)
-}
+    const results = {
+      status: "ok",
+      request_id: 1,
+      parameters: {
+        query: query || "",
+        page,
+        limit,
+      },
+      data: {
+        count: total_claims,
+        data: claims,
+      },
+    }
+
+    return jsonResponse(results)
+
+  } catch (err: any) {
+    return errorResponse(err.message)
+  }
 }
 
 
 export async function POST(req: Request) {
 try {
  const body = await req.json()
+
     // console.log("Incoming body:", body)
     let profile;
     const existingProfile = await prisma.profile.findUnique({
@@ -98,7 +131,7 @@ try {
     return jsonResponse({ message: "Claim created successfully"}, 201)
 
 } catch (err: any) {
-
-return errorResponse(err.message, 109)
+console.log(err)
+return errorResponse("checking", 109)
 }
 }

@@ -216,7 +216,7 @@ const ClaimDetail = () => {
                 className="flex gap-6"
                 columnClassName="flex flex-col gap-6"
               >
-                {relatedClaim.claims.map((claim) => (
+                {relatedClaim?.claims.map((claim) => (
                   <ClaimCard key={claim.id} {...claim} />
                 ))}
               </Masonry>

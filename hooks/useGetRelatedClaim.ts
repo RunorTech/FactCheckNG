@@ -3,9 +3,11 @@ import { allClaimsEvents, sharedQueryKeys } from "@/mock/constant";
 import {  relatedClaimService } from "@/service/service";
 import { useQueryService } from "@/utils/useQueryService";
 import { useWebsocket } from "@/utils/useWebsocket";
+import { useParams } from "next/navigation";
 import { useEffect } from "react";
 
 export function useGetRelatedClaim(lga?: string) {
+    const { id } = useParams();
 
   const { data: getAllClaimsWSEvents } = useWebsocket({
     subEvent: allClaimsEvents.updated,
@@ -15,8 +17,8 @@ export function useGetRelatedClaim(lga?: string) {
     isPending: isLoadingRelatedClaim,
     isError,
     refetch,
-  } = useQueryService<Request, GetClaimsResponseProps>({
-    service:  {...relatedClaimService,  path: sharedApis.relatedClaim(lga as string)},
+  } = useQueryService<Request, GetRelatedClaimsResponseProps>({
+    service:  {...relatedClaimService,  path: sharedApis.relatedClaim({id: id as string, lga: lga as string})},
     options: {
       enabled: !!lga,
       keys: [`${sharedQueryKeys.getRelatedClaim}`],

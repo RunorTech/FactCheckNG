@@ -1,18 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-// import { mockClaims } from '@/mock/claims';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ClaimCard } from '../custom/ui/ClaimCard';
-import { CreatePostCard } from '../custom/ui/CreatePostCard';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGetAllClaims } from '@/hooks/useGetAllClaims';
+import { SubmitClaimModal } from './submitClaimModal';
 import Loading from '@/context/loading';
 
 const AllClaims = () => {
-  // const feedClaims = mockClaims;
   const [enableGetClaim, setEnableGetClaim] = useState(true)
+  
 
-  const { allClaims, isLoadingClaims } = useGetAllClaims(enableGetClaim);
+  const { allClaims, isLoadingClaims, fetchMoreClaims, isFetchingNextPage, hasMoreClaims } = useGetAllClaims(enableGetClaim);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (isFetchingNextPage || !hasMoreClaims) return;
+
+    const observer = new IntersectionObserver(async (entries) => {
+      const isVisible = entries[0]?.isIntersecting;
+      if (isVisible) {
+        await fetchMoreClaims();
+      }
+    }, { rootMargin: "250px" });
+
+    const target = loadMoreRef.current;
+    if (target) observer.observe(target);
+
+    return () => {
+      if (target) observer.unobserve(target);
+    };
+  }, [fetchMoreClaims, hasMoreClaims, isFetchingNextPage]);
 
   useEffect(() => {
     if (isLoadingClaims || !enableGetClaim) return;
@@ -38,14 +56,30 @@ const AllClaims = () => {
       </div>
 
       {/* Create Post */}
-      <CreatePostCard />
-
+      <SubmitClaimModal/>
+      <Loading openDialog={isLoadingClaims} />
      
-      {isLoadingClaims ? (<Loading />) : (
-        <div className="space-y-4">
-          {allClaims?.claims?.map((claim) => (
-            <ClaimCard key={claim.id} {...claim} />
+      {!isLoadingClaims && allClaims.length > 0 &&(
+        <div className="space-y-4 mb-6">
+          {allClaims?.map((claim) => (
+            <ClaimCard key={claim?.id} {...claim} />
           ))}
+        </div>
+      )}
+
+      {/* 👇 Sentinel for infinite loading */}
+      {hasMoreClaims && (
+        <div
+          ref={loadMoreRef}
+          className="h-20 flex justify-center items-center text-center text-sm text-muted-foreground"
+        >
+          {isFetchingNextPage ? "Loading more..." : ""}
+        </div>
+      )}
+
+      {!hasMoreClaims && (
+        <div className="h-20 text-center text-muted-foreground text-sm">
+          No more claims
         </div>
       )}
       

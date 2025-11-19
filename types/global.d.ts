@@ -8,7 +8,10 @@ interface CombinedReducerType {
 declare module "*.webm";
 
 interface GetClaimsRequestProps {
-  data: string
+  // data: string
+  query?: string
+  page?: string
+  limit: string
 }
 interface GetClaimRequestProps {
   id: string
@@ -18,7 +21,7 @@ interface DeleteClaimRequestProps {
 }
 
 interface SubmitClaimRequestProps extends  SubmitClaimForm {
-location: string
+data: string
 }
 interface SubmitClaimResponseProps {
   message: string
@@ -28,7 +31,18 @@ type ClaimStatus = "verified" | "unverified" | "false";
 type VerdictStatus = "true" | "false" | "pending" | "inconclusive";
 
 interface GetClaimsResponseProps {
+  data: {
+    count: number
+    data: ClaimCardProps[]
+  }
+  parameters: {
+    page: number
+  }
+  
+}
+interface GetRelatedClaimsResponseProps {
   claims: ClaimCardProps[]
+  
 }
 interface GetClaimResponseProps {
   claim: ClaimCardProps
@@ -42,6 +56,16 @@ interface locationResponseProps {
   postcode: string;
   road: string;
   state: string;
+}
+interface UserProfileProps {
+  avatarUrl: string;
+bio: string;
+createdAt : string;
+fullName : string;
+id : string;
+location : string;
+updatedAt :string;
+verifiedClaims: number;
 }
 interface ClaimCardProps {
   id: string

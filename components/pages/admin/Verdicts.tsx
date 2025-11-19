@@ -35,7 +35,7 @@ const VerdictsPage = () => {
       Promise.resolve().then(() => setEnableGetClaim(false));
     }, [isLoadingClaims, enableGetClaim]);
   
-  const publishedClaims = allClaims?.claims.filter(c => c.verdict !== 'pending');
+  const publishedClaims = allClaims?.filter(c => c.verdict !== 'pending');
   
   const filteredClaims = publishedClaims?.filter(claim => {
     const matchesSearch = claim.title.toLowerCase().includes(searchQuery.toLowerCase()) ||

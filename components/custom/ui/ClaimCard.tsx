@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Heart, MessageCircle, Share2, Bookmark, User, MapPin } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark,  MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -49,7 +49,7 @@ export const ClaimCard = ({
     }
   }, [attachments]);
   return (
-    <div className={`bg-${cardBgColor[verdict]} p-2 rounded-2xl border hover:shadow-lg h-fit`}>
+    <div className={`bg-${cardBgColor[verdict]}  p-2 rounded-2xl border hover:shadow-lg h-fit`}>
       
      <Card className="overflow-hidden transition-all py-0 border-0">
         <CardHeader className={`bg-${cardBgColor[verdict]} pb-3`}>

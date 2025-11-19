@@ -1,16 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import HomeLayout from "@/components/custom/layout/homeLayout";
+import AllClaimsLayout from "@/components/custom/layout/allClaimsLayout";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "FactCheck",
@@ -25,9 +16,14 @@ export default function RootLayout({
   return (
       <main
       >
-        <HomeLayout>
+      
+
+        <AllClaimsLayout>
           {children}
-        </HomeLayout>
+
+        </AllClaimsLayout>
+
+       
       </main>
   );
 }

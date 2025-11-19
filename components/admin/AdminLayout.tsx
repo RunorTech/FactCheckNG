@@ -1,5 +1,5 @@
 "use client"
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import {
   LayoutDashboard,
   FileText,
@@ -24,7 +24,7 @@ import {
   SidebarTrigger,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { usePathname, useSearchParams } from 'next/navigation';
+import {  usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 interface AdminLayoutProps {
@@ -32,10 +32,27 @@ interface AdminLayoutProps {
 }
 
 export const AdminLayout = ({ children }: AdminLayoutProps) => {
- const pathname = usePathname()         // e.g. /claims/details
-   const searchParams = useSearchParams() // e.g. ?id=123&state=lagos
- 
-   const location = `${pathname}?${searchParams.toString()}`
+  const pathname = usePathname()         // e.g. /claims/details
+  const searchParams = useSearchParams() // e.g. ?id=123&state=lagos
+  const [isAdmin, setIsAdmin] = useState(false)
+  const router = useRouter();
+  const hasPrompted = useRef(false);
+
+  useEffect(() => {
+    if (hasPrompted.current) return;
+    hasPrompted.current = true;
+
+    const inputPassword = prompt("input admin password");
+    const adminPassword = "@kayode_1234";
+
+    if (inputPassword === adminPassword) {
+      Promise.resolve().then(() => setIsAdmin(true));
+    } else {
+      router.push("/");
+    }
+  }, []);
+
+  const location = `${pathname}?${searchParams.toString()}`
 
   const links = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
@@ -46,7 +63,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
     { icon: Settings, label: 'Settings', path: '/admin/settings' },
   ];
 
-  return (
+  if (isAdmin) return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
         <Sidebar>
@@ -64,7 +81,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
                 <SidebarMenu>
                   {links.map((link) => {
                     const Icon = link.icon;
-                    const isActive = location=== link.path;
+                    const isActive = location === link.path;
 
                     return (
                       <SidebarMenuItem key={link.path}>

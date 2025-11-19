@@ -37,7 +37,7 @@ const ClaimsPage = () => {
     Promise.resolve().then(() => setEnableGetClaim(false));
   }, [isLoadingClaims, enableGetClaim]);
 
-  const filteredClaims = allClaims?.claims.filter(claim => {
+  const filteredClaims = allClaims?.filter(claim => {
     const matchesSearch = claim.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       claim?.lga?.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'all' || claim.verdict === statusFilter;

@@ -1,49 +1,38 @@
 import { allClaimsEvents, sharedQueryKeys } from "@/mock/constant";
-import { allClaimsService } from "@/service/service";
+import { allClaimsService, allUsersService } from "@/service/service";
 import { useDebounce } from "@/utils/useDebounce";
 import { useInfiniteQueryService } from "@/utils/useInfintyQuery";
 // import { useQueryService } from "@/utils/useQueryService";
 import { useWebsocket } from "@/utils/useWebsocket";
 import { useEffect } from "react";
 
-export function useGetAllClaims(enabledClaims: boolean) {
+export function useGetAllUsers(enabledClaims: boolean) {
    const { search, debouncedSearch, setSearch } = useDebounce({
     initialValue: 'ALL',
   })
-  const { data: getAllClaimsWSEvents } = useWebsocket({
-    subEvent: allClaimsEvents.created,
-  });
-   const { data: deleteClaimsWSEvents } = useWebsocket({
-    subEvent: allClaimsEvents.deleted,
-  });
+
 
   const {
     data: responseData,
-    isPending: isLoadingClaims,
+    isPending: isLoadingUsers,
     hasPreviousPage,
     fetchPreviousPage,
-    hasNextPage: hasMoreClaims,
+    hasNextPage: hasMoreUsers,
     fetchNextPage,
     isError,
     refetch,
     isFetchingNextPage,
   } = useInfiniteQueryService<GetClaimsRequestProps, GetClaimsResponseProps>({
-    service: {...allClaimsService, data: {page: '1', query: debouncedSearch, limit: "3"}},
+    service: {...allUsersService, data: {page: '1', query: debouncedSearch, limit: "3"}},
     options: {
       enabled: enabledClaims,
       keys: [`${sharedQueryKeys.getClaims}`],
     },
   });
 
-   useEffect(() => {
-    if (getAllClaimsWSEvents || deleteClaimsWSEvents) {
-      refetch();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getAllClaimsWSEvents, deleteClaimsWSEvents]);
 
-  const allClaims  = responseData?.pages?.reduce<ClaimCardProps[]>((acc, page) => {
-      return acc.concat(page.data.data as unknown as ClaimCardProps[])
+  const allUsers  = responseData?.pages?.reduce<UserProfileProps[]>((acc, page) => {
+      return acc.concat(page.data.data as unknown as UserProfileProps[])
     }, []) || []
   const fetchMoreClaims = async (): Promise<void> => {
     fetchNextPage()
@@ -52,13 +41,13 @@ export function useGetAllClaims(enabledClaims: boolean) {
   }
 
   return {
-    allClaims,
+    allUsers,
     isError,
     refetch,
-    isLoadingClaims,
+    isLoadingUsers,
     hasPreviousPage,
     fetchPreviousPage,
-    hasMoreClaims,
+    hasMoreUsers,
     fetchMoreClaims,
     search,
     isFetchingNextPage,

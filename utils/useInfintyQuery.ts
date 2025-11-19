@@ -1,46 +1,25 @@
-// import { useSelector } from 'react-redux';
 
-import {
-  InfiniteData,
-  QueryKey,
-  useInfiniteQuery,
-} from '@tanstack/react-query';
-
-
+import { InfiniteData, QueryKey, useInfiniteQuery } from '@tanstack/react-query'
 
 import client from './client';
-// import { AuthReduxState } from '../types/reduxStore';
-
-const DEFAULT_PAGE_LIMIT = 10;
 
 export function useInfiniteQueryService<
-  Req extends Omit<Partial<PaginationData>, 'count'> | undefined | null,
-  Resp extends Record<'pagination', PaginationData>,
+  Req extends Omit<Partial<ResponseData>, 'total_products'> | undefined | null,
+  Resp extends { parameters: PageParams; data: ResponseData },
 >(props: UseInfinityQueryServiceProps<Req, Resp>) {
   const {
-    service: { options: serviceOptions, ...service },
+    service: { options: serviceOptions, ...restService },
     options: queryOptions,
-  } = props;
+  } = props
 
-  const { data = {} as PageParams } = service;
-  const payload = data || ({} as PageParams);
-  const { keys = [], ...rest } = queryOptions || {};
+  const payload = restService.data || ({} as PageParams)
+  const { keys = [], ...restQueryOptions } = queryOptions || {}
 
-  const initialPageParam = {
-    pos: payload.pos || 0,
-    delta: payload.delta ?? DEFAULT_PAGE_LIMIT,
-  } as PageParams;
+  const initialPageParam: PageParams = {
+    page: 'page' in payload && payload.page !== undefined ? payload.page : 1,
+  }
 
-  // const { refreshToken, accessToken } = useSelector<
-  //   CombinedReducerType,
-  //   AuthReduxState
-  // >(({ authentication }) => authentication);
-
-  // const { openModal } = useModalRoute();
-  // const searchParams = useSearchParams();
-  // const isRouteExcluded = useExemptSubscriptionRoute();
-
-  const result = useInfiniteQuery<
+  return useInfiniteQuery<
     Resp,
     Error,
     InfiniteData<Resp, PageParams>,
@@ -48,46 +27,45 @@ export function useInfiniteQueryService<
     PageParams
   >({
     initialPageParam,
-    ...rest,
+    ...restQueryOptions,
     queryKey: [
       ...keys,
       ...(serviceOptions?.keys || []),
-      service,
-      // refreshToken?._time_stamp,
-      // accessToken?._time_stamp,
+      restService,
+
     ],
     queryFn: async ({ pageParam }) => {
       const response = await client.request<Req & PageParams, Resp>({
-        ...service,
+        ...restService,
         data: {
           ...payload,
           ...pageParam,
-          ...(payload.delta && { delta: payload.delta, pos: 0 }),
-          ...(payload.pos && { delta: payload.pos }),
         } as Req & PageParams,
-      });
+      })
 
-      return response;
+      return response
     },
-    getNextPageParam: (lastPage: Resp) => {
-      const delta = payload.delta || initialPageParam?.delta || 0;
-      const lastPageOffset = lastPage.pagination?.pos || 0;
+    getNextPageParam: (responseData) => {
+      const { count, data } = responseData.data
+      const { page } = responseData.parameters
 
-      const pos = delta + lastPageOffset;
-      const hasMore = pos < (lastPage.pagination?.count ?? Infinity);
+      let total_pages
+      if (count && data && page)
+        total_pages = Math.ceil(count / data.length)
 
-      return !hasMore ? undefined : { pos, delta };
+      if (total_pages)
+        return Number(page) < total_pages
+          ? { page: Number(page) + 1 }
+          : undefined
     },
-    getPreviousPageParam: (previousPage: Resp) => {
-      const delta = payload.delta || initialPageParam?.delta || 0;
-      const lastPageOffset = previousPage.pagination?.pos || 0;
+    getPreviousPageParam: (data) => {
+      const { page } = data.parameters
+      if (!page) return
+      const prevPage = Number(page) - 1
 
-      const pos = lastPageOffset - delta;
-      const hasPrevious = pos > 0;
-
-      return { pos: hasPrevious ? pos : 0, delta };
+      return prevPage >= 1 ? { page: prevPage } : undefined
     },
-  });
-
-  return result;
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  })
 }
