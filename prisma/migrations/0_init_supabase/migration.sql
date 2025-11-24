@@ -38,10 +38,11 @@ CREATE TABLE "lgas" (
 -- CreateTable
 CREATE TABLE "profiles" (
     "id" UUID NOT NULL,
-    "full_name" TEXT,
+    "full_name" TEXT NOT NULL,
     "avatar_url" TEXT,
     "bio" TEXT,
     "location" TEXT,
+    "role" "AppRole" NOT NULL DEFAULT 'viewer',
     "verified_claims" INTEGER NOT NULL DEFAULT 0,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -50,21 +51,12 @@ CREATE TABLE "profiles" (
 );
 
 -- CreateTable
-CREATE TABLE "user_roles" (
-    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "user_id" UUID NOT NULL,
-    "role" "AppRole" NOT NULL DEFAULT 'viewer',
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "user_roles_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "claims" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "user_id" UUID NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
+    "attachments" TEXT,
     "lga_id" UUID NOT NULL,
     "category" "ClaimCategory" NOT NULL,
     "verdict" "VerdictStatus" NOT NULL DEFAULT 'pending',
@@ -201,9 +193,6 @@ CREATE UNIQUE INDEX "lgas_name_state_id_key" ON "lgas"("name", "state_id");
 CREATE UNIQUE INDEX "profiles_full_name_key" ON "profiles"("full_name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_roles_user_id_role_key" ON "user_roles"("user_id", "role");
-
--- CreateIndex
 CREATE UNIQUE INDEX "likes_claim_id_user_id_key" ON "likes"("claim_id", "user_id");
 
 -- CreateIndex
@@ -214,6 +203,9 @@ ALTER TABLE "lgas" ADD CONSTRAINT "lgas_state_id_fkey" FOREIGN KEY ("state_id") 
 
 -- AddForeignKey
 ALTER TABLE "claims" ADD CONSTRAINT "claims_lga_id_fkey" FOREIGN KEY ("lga_id") REFERENCES "lgas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "claims" ADD CONSTRAINT "claims_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "profiles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "evidence" ADD CONSTRAINT "evidence_claim_id_fkey" FOREIGN KEY ("claim_id") REFERENCES "claims"("id") ON DELETE CASCADE ON UPDATE CASCADE;

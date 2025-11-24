@@ -1,3 +1,5 @@
+'use client'
+import { CreateUserModal } from "@/components/pages/createUserModal";
 import { ClaimNav } from "../ui/ClaimNav";
 import { FeedSidebar } from "../ui/FeedSidebar";
 import { TrendingSidebar } from "../ui/TrendingSidebar";
@@ -16,6 +18,7 @@ const AllClaimsLayout = ({ children }: { children: React.ReactNode }) => {
                 <div className="lg:hidden  fixed bottom-6 left-4">
                     <ClaimNav />
                 </div>
+                <CreateUserModal/>
             </div>
         </div>
     );

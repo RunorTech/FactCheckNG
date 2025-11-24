@@ -9,6 +9,8 @@ import Loading from '@/context/loading';
 
 const AllClaims = () => {
   const [enableGetClaim, setEnableGetClaim] = useState(true)
+  const [tabValue, setTabValue] = useState('all')
+
   
 
   const { allClaims, isLoadingClaims, fetchMoreClaims, isFetchingNextPage, hasMoreClaims } = useGetAllClaims(enableGetClaim);
@@ -38,30 +40,32 @@ const AllClaims = () => {
     Promise.resolve().then(() => setEnableGetClaim(false));
   }, [isLoadingClaims, enableGetClaim]);
 
- 
+  const filteredClaims = tabValue === "all"
+    ? allClaims
+    : allClaims?.filter((claim) => claim.verdict === tabValue);
 
   return (
 
     <div className="flex-1 max-w-2xl mx-auto">
       {/* Filter Tabs */}
       <div className="mb-4">
-        <Tabs defaultValue="all" className="w-full">
+        <Tabs defaultValue="all" onValueChange={(value) => {setTabValue(value)}} className="w-full">
           <TabsList className="w-full justify-start bg-card border">
             <TabsTrigger value="all">All Claims</TabsTrigger>
-            <TabsTrigger value="verified">Verified</TabsTrigger>
-            <TabsTrigger value="inconclusive">Inconclusive</TabsTrigger>
-            <TabsTrigger value="saved">Saved</TabsTrigger>
+            <TabsTrigger value="true">Verified</TabsTrigger>
+            <TabsTrigger value="pending">Unverified</TabsTrigger>
+            <TabsTrigger value="false">False</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
 
       {/* Create Post */}
-      <SubmitClaimModal/>
+      <SubmitClaimModal />
       <Loading openDialog={isLoadingClaims} />
      
       {!isLoadingClaims && allClaims.length > 0 &&(
         <div className="space-y-4 mb-6">
-          {allClaims?.map((claim) => (
+          {filteredClaims?.map((claim) => (
             <ClaimCard key={claim?.id} {...claim} />
           ))}
         </div>

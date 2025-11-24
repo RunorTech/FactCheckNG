@@ -1,10 +1,7 @@
-import { allClaimsEvents, sharedQueryKeys } from "@/mock/constant";
-import { allClaimsService, allUsersService } from "@/service/service";
+import {  sharedQueryKeys } from "@/mock/constant";
+import { allUsersService } from "@/service/service";
 import { useDebounce } from "@/utils/useDebounce";
 import { useInfiniteQueryService } from "@/utils/useInfintyQuery";
-// import { useQueryService } from "@/utils/useQueryService";
-import { useWebsocket } from "@/utils/useWebsocket";
-import { useEffect } from "react";
 
 export function useGetAllUsers(enabledClaims: boolean) {
    const { search, debouncedSearch, setSearch } = useDebounce({

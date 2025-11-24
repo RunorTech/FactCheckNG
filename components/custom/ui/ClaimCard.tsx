@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Heart, MessageCircle, Share2, Bookmark,  MapPin } from "lucide-react";
+import { Share2, Bookmark, MapPin, ThumbsUpIcon, ThumbsDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -7,31 +7,46 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import Link from "next/link";
 import Image from "next/image";
 import { VerdictBadge } from "./VerdictBadge";
-import { base64ToFile, timeAgoOrIn } from "@/mock/constant";
+import { base64ToFile, getVerdictFromReactions, timeAgoOrIn, useConstantUtils } from "@/mock/constant";
 import { useEffect, useState } from "react";
+import { useGiveVerdict } from "@/hooks/useGiveVerdict";
+import { useGetAllClaims } from "@/hooks/useGetAllClaims";
+import Loading from "@/context/loading";
 
 
 export const ClaimCard = ({
   id,
   profile,
   description,
-  likes,
-  comments,
-  verdict,
+  // verdict,
   submittedDate,
   category,
   lga,
+  likes,
+  disLikes,
   createdAt,
   attachments,
   title
 }: ClaimCardProps) => {
   const cardBgColor = {
     true: 'verdict-true/10 ',
-    inconclusive: 'verdict-inconclusive/10 ',
+    // inconclusive: 'verdict-inconclusive/10 ',
     false: 'verdict-false/10 ',
     pending: 'verdict-pending/10 ',
   };
   const [imageUrl, setImageUrl] = useState('');
+  const { disLikeClaim, likeClaim, isDisLikeClaimPending, isLikeClaimPending } = useGiveVerdict()
+  
+  const { currentUserID } = useConstantUtils()
+
+  const formData = { claimId: id, userId: currentUserID }
+  const stringifyData = JSON.stringify(formData)
+  const verdict = getVerdictFromReactions({likes: likes?.length, dislikes: disLikes?.length})
+
+  const hasLiked = likes.find((like) => like.userId === currentUserID)
+  const hasDisLiked = disLikes.find((dislike) => dislike.userId === currentUserID)
+
+
 
   useEffect(() => {
     if (!attachments) return;
@@ -50,8 +65,8 @@ export const ClaimCard = ({
   }, [attachments]);
   return (
     <div className={`bg-${cardBgColor[verdict]}  p-2 rounded-2xl border hover:shadow-lg h-fit`}>
-      
-     <Card className="overflow-hidden transition-all py-0 border-0">
+
+      <Card className="overflow-hidden transition-all py-0 border-0">
         <CardHeader className={`bg-${cardBgColor[verdict]} pb-3`}>
           <div className="flex items-start justify-between">
             <div className="flex items-center space-x-3">
@@ -78,9 +93,9 @@ export const ClaimCard = ({
 
           </div>
           <div className="flex items-center gap-3">
-            
+
             <div className="flex-1">
-             
+
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <span>{new Date(submittedDate).toLocaleDateString()}</span>
                 <span>•</span>
@@ -122,45 +137,50 @@ export const ClaimCard = ({
           )}
 
 
-          
-            <div className="rounded-lg border bg-muted/50 p-3 mt-3">
-              <a
+
+          <div className="rounded-lg border bg-muted/50 p-3 mt-3">
+            <a
               href={`/claims/${id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-muted-foreground hover:text-primary flex items-center space-x-2"
-              >
-                <span className="font-medium">Read More:</span>
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-muted-foreground hover:text-primary flex items-center space-x-2"
+            >
+              <span className="font-medium">Read More:</span>
               <span className="truncate hover:underline">{`/claims/${id}`}</span>
-              </a>
-            </div>
-         
+            </a>
+          </div>
+
 
           <p className="text-sm text-muted-foreground">{timeAgoOrIn(createdAt)}</p>
         </CardContent>
 
-        <CardFooter className="border-t pt-3">
+        <CardFooter className="border-t py-3">
           <div className="flex items-center justify-between w-full">
-            <div className="flex items-center space-x-1">
-              <Button variant="ghost" size="sm" className="space-x-2">
-                <Heart className="h-5 w-5" />
-                <span>{likes}</span>
-              </Button>
-              <Button variant="ghost" size="sm" className="space-x-2" asChild>
-                <Link href={`/claims/${id}`}>
-                  <MessageCircle className="h-5 w-5" />
-                  <span>{comments}</span>
-                </Link>
-              </Button>
+            <div className="flex flex-col space-y-3">
+              <p>
+                <span className="text-sm text-muted-foreground">{likes.length} : profile has confirmed that this is </span>
+                <Button onClick={() => { likeClaim({ data: stringifyData }) }} disabled={!!hasLiked || isLikeClaimPending} variant="outline" size="sm" className={`${!!hasLiked && ('disabled:opacity-100 disabled:hover:bg-transparent text-blue-500')} space-x-2 cursor-pointer`}>
+                  <span>True</span>
+                  <ThumbsUpIcon className="h-5 w-5" fill={`${!!hasLiked && ('currentColor')}`} />
+                </Button>
+              </p>
+             <p>
+                <span className="text-sm text-muted-foreground">{disLikes.length} : profile has confirmed that this is </span>
+                <Button onClick={() => { disLikeClaim({ data: stringifyData }) }} disabled={!!hasDisLiked || isDisLikeClaimPending} variant="outline" size="sm" className={`${!!hasDisLiked && ('disabled:opacity-100 disabled:hover:bg-transparent text-blue-500')} space-x-2 cursor-pointer`} >
+                  <span>Not True</span>
+                  <ThumbsDownIcon className="h-5 w-5 " fill={`${!!hasDisLiked && ('currentColor')}`} />
+                </Button>
+             </p>
             </div>
-            <div className="flex items-center space-x-1">
+            {/* <div className="flex items-center space-x-1">
               <Button variant="ghost" size="icon">
                 <Share2 className="h-5 w-5" />
               </Button>
               <Button variant="ghost" size="icon">
                 <Bookmark className="h-5 w-5" />
               </Button>
-            </div>
+            </div> */}
+            <Loading openDialog={ isDisLikeClaimPending || isLikeClaimPending} />
           </div>
         </CardFooter>
       </Card>

@@ -54,3 +54,38 @@ export async function GET(req: Request) {
     return errorResponse(err.message)
   }
 }
+
+export async function POST(req: Request) {
+try {
+ const body = await req.json()
+
+    let profile;
+    const existingProfile = await prisma.profile.findUnique({
+      where: { userId: body.userId },
+    })
+    
+    if(!existingProfile) {
+    const newProfile = await prisma.profile.create({
+         data: {
+        id: body.userId,
+        userId: body.userId,
+        deviceInfo: body.deviceInfo,
+        fullName: `${body.firstName} ${body.lastName}`,
+        location: body.location,
+        bio: body.career,
+      },
+    })
+    profile = newProfile
+    } else {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    profile = existingProfile
+    }
+       
+    
+    return jsonResponse({ message: "Profile created successfully"}, 201)
+
+} catch (err: any) {
+console.log(err)
+return jsonResponse({ message: "error creating Profile"}, 101)
+}
+}

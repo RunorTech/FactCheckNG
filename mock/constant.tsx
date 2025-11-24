@@ -1,4 +1,6 @@
-import { Home, MapPin, TrendingUp, Users, Settings, BookOpen } from 'lucide-react';
+import { RootState } from '@/utils/store';
+import { Home, MapPin, Users, BookOpen } from 'lucide-react';
+import { useSelector } from 'react-redux';
 
 export const mainLinks = [
     { icon: Home, label: 'Feed', path: '/' },
@@ -152,3 +154,32 @@ export const allClaimsEvents = {
     updated: "claim:updated",
     deleted: "claim:deleted",
 };
+interface VerdictProps {
+    likes?: number;
+    dislikes?: number;
+}
+
+export const getVerdictFromReactions = ({
+    likes = 0,
+    dislikes = 0,
+}: VerdictProps): VerdictStatus => {
+    if (likes > dislikes) {
+        return "true";
+    } else if (likes < dislikes) {
+        return "false";
+    } else {
+        return "pending";
+    }
+};
+
+export const useConstantUtils = () => {
+    const currentUserID = useSelector(
+        (state: RootState) => state.shared.currentUserID
+    );
+
+    const hasProfile = useSelector(
+        (state: RootState) => state.shared.hasProfile
+    );
+
+    return { hasProfile, currentUserID }
+}

@@ -9,4 +9,7 @@ export interface SharedReduxState {
     showDismissButton?: boolean;
     duration?: number;
   };
+  hasProfile: boolean;
+  currentUserID: string | null
+
 }

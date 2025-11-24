@@ -38,6 +38,7 @@ export async function GET(req: Request) {
         comments: true,
         profile: true,
         likes: true,
+        disLikes: true
       }
     })
 
@@ -70,18 +71,12 @@ try {
     // console.log("Incoming body:", body)
     let profile;
     const existingProfile = await prisma.profile.findUnique({
-      where: { fullName: `${body.firstName} ${body.lastName}` },
+      where: { userId: body.userId },
     })
+    
     if(!existingProfile) {
-    const newProfile = await prisma.profile.create({
-         data: {
-        id: crypto.randomUUID(),
-        fullName: `${body.firstName} ${body.lastName}`,
-        location: body.location,
-        bio: body.career,
-      },
-    })
-    profile = newProfile
+    return jsonResponse({ message: "NO profile found"}, 102)
+    
     } else {
     profile = existingProfile
     }
@@ -89,9 +84,9 @@ try {
 
     // 2️⃣ Create or find state
     const state = await prisma.state.upsert({
-      where: { name: body.state.toLowerCase() },
+      where: { name: body.location.state },
       update: {},
-      create: { name: body.state.toLowerCase() },
+      create: { name: body.location.state },
     })
 
 
@@ -100,13 +95,13 @@ try {
     const lga = await prisma.lGA.upsert({
       where: {
         name_stateId: {
-          name: body.lga.toLowerCase(),
+          name: body.location.county ,
           stateId: state.id,
         },
       },
       update: {},
       create: {
-        name: body.lga.toLowerCase(),
+        name: body.location.county,
         stateId: state.id,
       },
     })

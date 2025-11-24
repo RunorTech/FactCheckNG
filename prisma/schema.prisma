@@ -84,27 +84,22 @@ model LGA {
 
 model Profile {
   id              String   @id @db.Uuid
-  fullName        String  @unique @map("full_name")
+  fullName        String?
+  userId          String  @unique @map("user_id")
+  deviceInfo      String  
   avatarUrl       String?  @map("avatar_url")
   bio             String?
   location        String?
+  role            AppRole  @default(viewer)
   claims          Claim[]
   verifiedClaims  Int      @default(0) @map("verified_claims")
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
 
+
   @@map("profiles")
 }
 
-model UserRole {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId    String   @map("user_id") @db.Uuid
-  role      AppRole  @default(viewer)
-  createdAt DateTime @default(now()) @map("created_at")
-
-  @@unique([userId, role])
-  @@map("user_roles")
-}
 
 model Claim {
   id                String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -131,6 +126,7 @@ model Claim {
   citations         Citation[]
   comments          Comment[]
   likes             Like[]
+  disLikes          DisLike[]
   shares            Share[]
   appeals           Appeal[]
   reports           Report[]
@@ -191,6 +187,17 @@ model Like {
 
   @@unique([claimId, userId])
   @@map("likes")
+}
+model DisLike {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  claimId   String   @map("claim_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  claim     Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@unique([claimId, userId])
+  @@map("disLikes")
 }
 
 model Share {

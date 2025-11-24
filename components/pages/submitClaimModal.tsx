@@ -11,33 +11,16 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { stateLGAs } from './state_lga';
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ImageFileUploader from '../custom/ui/imageFileUploader';
-import { Check, ChevronsUpDown } from "lucide-react"
-import { cn } from "@/lib/utils"
-import {
-    Popover,
-    PopoverTrigger,
-    PopoverContent,
-} from "@/components/ui/popover"
-import {
-    Command,
-    CommandInput,
-    CommandList,
-    CommandEmpty,
-    CommandGroup,
-    CommandItem,
-} from "@/components/ui/command"
-import { careers, fileToBase64 } from '@/mock/constant';
+import { fileToBase64, useConstantUtils } from '@/mock/constant';
 import { useToast } from '@/utils/useToast';
 import { reverseGeocode } from '@/hooks/helpers/getGeoLocation';
 import { useSubmitClaims } from '@/hooks/useSubmitClaims';
 import {
     AlertDialog,
-    AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
@@ -53,86 +36,79 @@ import Loading from '@/context/loading';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const submitClaimSchema = z.object({
-  firstName: z.string().min(1, "first name is required").max(255),
-  lastName: z.string().min(1, "last name is required").max(255),
-  career: z.string().min(1, "Career is required").max(255),
-  title: z.string().min(1, "title is required"),
-  description: z.string().min(1, "Description must be at least 8 characters"),
-  state: z.string().min(1, "state  is required").max(100),
-  lga: z.string().min(1, "lga is required").max(100,),
-  category: z.string().min(1, "category is required").max(100,),
-  attachments: z
-    .any()
-    .optional()
-    .refine((val) => val === undefined || val instanceof File, {
-      message: "Please upload a valid image file",
-    })
-    .refine(
-      (file) => file === undefined || file.size <= MAX_FILE_SIZE,
-      { message: "File size must be less than 5MB" }
-    ),
-  anonymous: z.boolean(),
+    title: z.string().min(1, "title is required"),
+    description: z.string().min(1, "Description must be at least 8 characters"),
+    category: z.string().min(1, "category is required").max(100,),
+    attachments: z
+        .any()
+        .optional()
+        .refine((val) => val === undefined || val instanceof File, {
+            message: "Please upload a valid image file",
+        })
+        .refine(
+            (file) => file === undefined || file.size <= MAX_FILE_SIZE,
+            { message: "File size must be less than 5MB" }
+        ),
+    anonymous: z.boolean(),
 
 })
 
 type SubmitClaimForm = z.infer<typeof submitClaimSchema>;
 
 export function SubmitClaimModal() {
-      const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
-      const [open, setOpen] = useState(false)
-      const [selectedCareer, setSelectedCareer] = useState("")
+    //   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
+    //   const [open, setOpen] = useState(false)
+    //   const [selectedCareer, setSelectedCareer] = useState("")
     const [gettingLocation, setGettingLocation] = useState(false)
+    const { currentUserID } = useConstantUtils()
 
-      const { errorToast} = useToast();
-      const { submitClaim, isSubmitClaimPending } = useSubmitClaims()
-    
-      const submitClaimForm = useForm<SubmitClaimForm>({
+
+    const { errorToast } = useToast();
+    const { submitClaim, isSubmitClaimPending } = useSubmitClaims()
+
+    const submitClaimForm = useForm<SubmitClaimForm>({
         resolver: zodResolver(submitClaimSchema),
         defaultValues: {
-          firstName: "",
-          lastName: "",
-          career: "",
-          title: "",
-          description: "",
-          state: "",
-          lga: "",
-          category: "",
-          attachments: "",
-          anonymous: false
+            title: "",
+            description: "",
+            category: "",
+            attachments: "",
+            anonymous: false
         }
-      });
-      const handleSubmit = async (data: SubmitClaimForm) => {
+    });
+    const handleSubmit = async (data: SubmitClaimForm) => {
         const { attachments, ...formData } = data
         let attachmentsBase64 = "";
-    
+
         if (attachments instanceof File) {
-          attachmentsBase64 = await fileToBase64(attachments);
+            attachmentsBase64 = await fileToBase64(attachments);
         }
         const payload = {
-          ...formData,
-          attachments: attachmentsBase64,
+            userId: currentUserID,
+            ...formData,
+            attachments: attachmentsBase64,
         };
         navigator.geolocation.getCurrentPosition(
-          async (pos) => {
+            async (pos) => {
                 setGettingLocation(true)
-            const location = await reverseGeocode(pos.coords.latitude, pos.coords.longitude)
-    
-            const dataWithLocation = {
-              ...payload,
-              location: JSON.stringify(location)
-            }
+                const location = await reverseGeocode(pos.coords.latitude, pos.coords.longitude)
+
+                const dataWithLocation = {
+                    ...payload,
+                    location: location
+                }
                 setGettingLocation(false)
                 const stringifyFormData = JSON.stringify(dataWithLocation)
                 // console.log(stringifyFormData)
-             
-                return await submitClaim({data: stringifyFormData })
-          },
-          async (err) => {
-            errorToast("Failed to get location please allow")
-            return err
-          }
+
+                return await submitClaim({ data: stringifyFormData })
+            },
+            async (err) => {
+                errorToast("Failed to get location please allow")
+                return err
+            }
         );
-      };
+    };
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -204,7 +180,7 @@ export function SubmitClaimModal() {
                                     )}
                                 />
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <FormField
                                         control={submitClaimForm.control}
                                         name="state"
@@ -257,7 +233,7 @@ export function SubmitClaimModal() {
                                             </FormItem>
                                         )}
                                     />
-                                </div>
+                                </div> */}
 
                                 <FormField
                                     control={submitClaimForm.control}
@@ -321,7 +297,7 @@ export function SubmitClaimModal() {
                                     )}
                                 />
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <FormField
                                         control={submitClaimForm.control}
                                         name="firstName"
@@ -356,9 +332,9 @@ export function SubmitClaimModal() {
                                             </FormItem>
                                         )}
                                     />
-                                </div>
+                                </div> */}
 
-                                <FormField
+                                {/* <FormField
                                     control={submitClaimForm.control}
                                     name="career"
                                     render={({ field }) => (
@@ -413,7 +389,7 @@ export function SubmitClaimModal() {
                                             <FormMessage />
                                         </FormItem>
                                     )}
-                                />
+                                /> */}
 
                                 <div className="flex gap-4">
                                     <Button disabled={isSubmitClaimPending} type="submit" onClick={submitClaimForm.handleSubmit(handleSubmit)} size="lg" className="flex-1">
@@ -429,7 +405,7 @@ export function SubmitClaimModal() {
 
                     </AlertDialogFooter>
                 </div>
-               
+
             </AlertDialogContent>
         </AlertDialog>
     )

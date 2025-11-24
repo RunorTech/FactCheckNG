@@ -16,6 +16,9 @@ export function useGetAllClaims(enabledClaims: boolean) {
    const { data: deleteClaimsWSEvents } = useWebsocket({
     subEvent: allClaimsEvents.deleted,
   });
+   const { data: updateClaimsWSEvents } = useWebsocket({
+    subEvent: allClaimsEvents.updated,
+  });
 
   const {
     data: responseData,
@@ -31,16 +34,15 @@ export function useGetAllClaims(enabledClaims: boolean) {
     service: {...allClaimsService, data: {page: '1', query: debouncedSearch, limit: "3"}},
     options: {
       enabled: enabledClaims,
-      keys: [`${sharedQueryKeys.getClaims}`],
     },
   });
 
    useEffect(() => {
-    if (getAllClaimsWSEvents || deleteClaimsWSEvents) {
+    if (getAllClaimsWSEvents || deleteClaimsWSEvents || updateClaimsWSEvents) {
       refetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getAllClaimsWSEvents, deleteClaimsWSEvents]);
+  }, [getAllClaimsWSEvents, deleteClaimsWSEvents, updateClaimsWSEvents ]);
 
   const allClaims  = responseData?.pages?.reduce<ClaimCardProps[]>((acc, page) => {
       return acc.concat(page.data.data as unknown as ClaimCardProps[])

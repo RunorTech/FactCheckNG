@@ -19,7 +19,9 @@ interface GetClaimRequestProps {
 interface DeleteClaimRequestProps {
   path: string
 }
-
+interface CreateUseRequestProps {
+  data: string
+}
 interface SubmitClaimRequestProps extends  SubmitClaimForm {
 data: string
 }
@@ -28,7 +30,7 @@ interface SubmitClaimResponseProps {
 }
 
 type ClaimStatus = "verified" | "unverified" | "false";
-type VerdictStatus = "true" | "false" | "pending" | "inconclusive";
+type VerdictStatus = "true" | "false" | "pending" ;
 
 interface GetClaimsResponseProps {
   data: {
@@ -67,6 +69,11 @@ location : string;
 updatedAt :string;
 verifiedClaims: number;
 }
+interface like {
+  id: string;
+  claimId: string;
+  userId: string;
+}
 interface ClaimCardProps {
   id: string
   userId: string
@@ -101,7 +108,8 @@ interface ClaimCardProps {
   evidence: any[] // replace with your Evidence type if you have one
   citations: any[] // replace with your Citation type
   comments: any[] // replace with your Comment type
-  likes: any[] // replace with your Comment type
+  likes: like[] // replace with your Comment type
+  disLikes: like[]
 
 
   profile: {

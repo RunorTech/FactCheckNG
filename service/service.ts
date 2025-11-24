@@ -26,5 +26,18 @@ export const deleteClaimService: ServiceInterface<DeleteClaimRequestProps, Submi
   path: '',
   method: ApiMethods.DELETE,
 };
+export const CreateUserService: ServiceInterface<CreateUseRequestProps, SubmitClaimResponseProps> = {
+  path: sharedApis.users,
+  method: ApiMethods.POST,
+};
 
+export const LikeClaimService: ServiceInterface<CreateUseRequestProps, SubmitClaimResponseProps> = {
+  path: sharedApis.likes,
+  method: ApiMethods.POST,
+};
+
+export const DislikeClaimService: ServiceInterface<CreateUseRequestProps, SubmitClaimResponseProps> = {
+  path: sharedApis.disLikes,
+  method: ApiMethods.POST,
+};
 
